@@ -1,0 +1,73 @@
+/*.axiomCharacterLeftPanel {
+  width: 256px;
+  flex: 0 0 256px;
+} */
+
+/* Show + and – buttons for all attribute sliders */
+.custom-system-number-field-control {
+  display: inline-block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  position: static !important;
+  margin: 0 !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+/* Align buttons and pip display in a clean row */
+.StrValue .custom-system-number-input-span,
+.IntValue .custom-system-number-input-span,
+.AgiValue .custom-system-number-input-span,
+.ResValue .custom-system-number-input-span,
+.ForValue .custom-system-number-input-span,
+.ChaValue .custom-system-number-input-span {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+[class*='CharacterSkillLevel'] .custom-system-number-field-control {
+  display: inline-block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  position: static !important;
+  margin: 0 !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+[class*='CharacterSkillLevel'] .custom-system-number-input-span {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+.health-bar-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  user-select: none;
+}
+
+.health-bar {
+  display: flex; 
+  gap: 2px !important;
+  position: relative;
+}
+
+/* Base, blue, and red layers share these styles */
+.health-bar .hp-box {
+  width: 16px !important;
+  height: 16px !important;
+  border: 2px solid #000 !important;
+  border-radius: 2px !important;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;  /* prevent shrinking */
+}
+
+/* Add spacing every 3 boxes from the RIGHT, except the rightmost box */
+.health-bar .hp-box:nth-last-child(3n):not(:last-child) {
+  margin-left: 3px !important;
+}

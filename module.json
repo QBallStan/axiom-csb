@@ -23,15 +23,6 @@
   "esmodules": [],
   "languages": [],
   "packs": [],
-  "relationships": {
-    "systems": [
-      {
-        "id": "custom-system-builder",
-        "type": "system",
-        "manifest": "https://gitlab.com/custom-system-builder/custom-system-builder/-/raw/stable/system.json"
-      }
-    ]
-  },
   "url": "https://github.com/QBallStan/axiom-csb",
   "manifest": "https://github.com/QBallStan/axiom-csb/releases/latest/download/module.json",
   "download": "https://github.com/QBallStan/axiom-csb/releases/latest/download/axiom-csb.zip"
