@@ -1,21 +1,56 @@
-<form>
+<p>DEBUG: AttributeMod={{attributeMod}}, SkillMod={{skillMod}}</p>
+<form class="axiom-roll-dialog">
   <div class="form-group">
-    <label>Attribute</label>
-    <input type="text" value="{{attributeDie}}" readonly />
+    <label>Attribute Die</label>
+    <select name="attributeDie">
+      <option value="d4" {{#if (eq attributeDie "d4")}}selected{{/if}}>d4</option>
+      <option value="d6" {{#if (eq attributeDie "d6")}}selected{{/if}}>d6</option>
+      <option value="d8" {{#if (eq attributeDie "d8")}}selected{{/if}}>d8</option>
+      <option value="d10" {{#if (eq attributeDie "d10")}}selected{{/if}}>d10</option>
+      <option value="d12" {{#if (eq attributeDie "d12")}}selected{{/if}}>d12</option>
+    </select>
   </div>
+
   <div class="form-group">
-    <label>Skill ({{skillName}})</label>
-    <input type="text" value="{{skillDie}}" readonly />
+    <label>Attribute Modifier</label>
+    <input type="number" name="attributeMod" value="{{attributeMod}}" />
   </div>
+
   <div class="form-group">
-    <label>Focus</label>
-    <input type="text" value="{{focusDie}}" readonly />
+    <label>Skill Die</label>
+    <select name="skillDie">
+      <option value="d4" {{#if (eq skillDie "d4")}}selected{{/if}}>d4</option>
+      <option value="d6" {{#if (eq skillDie "d6")}}selected{{/if}}>d6</option>
+      <option value="d8" {{#if (eq skillDie "d8")}}selected{{/if}}>d8</option>
+      <option value="d10" {{#if (eq skillDie "d10")}}selected{{/if}}>d10</option>
+      <option value="d12" {{#if (eq skillDie "d12")}}selected{{/if}}>d12</option>
+    </select>
   </div>
+
   <div class="form-group">
-    <label>Modifier</label>
-    <input type="number" name="modifier" value="0" />
+    <label>Skill Modifier</label>
+    <input type="number" name="skillMod" value="{{skillMod}}" />
   </div>
-  <footer class="sheet-footer">
-    <button type="button" class="roll-button">Roll</button>
-  </footer>
+
+  <div class="form-group">
+    <label>Focus Die</label>
+    <select name="focusDie">
+      <option value="d4" {{#if (eq focusDie "d4")}}selected{{/if}}>d4</option>
+      <option value="d6" {{#if (eq focusDie "d6")}}selected{{/if}}>d6</option>
+      <option value="d8" {{#if (eq focusDie "d8")}}selected{{/if}}>d8</option>
+      <option value="d10" {{#if (eq focusDie "d10")}}selected{{/if}}>d10</option>
+      <option value="d12" {{#if (eq focusDie "d12")}}selected{{/if}}>d12</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>General Modifier</label>
+    <input type="number" name="modifier" value="{{modifier}}" />
+  </div>
+
+  <div class="form-group">
+    <button type="button" class="roll-button">
+      <i class="fa-solid fa-dice"></i> Roll
+    </button>
+  </div>
 </form>

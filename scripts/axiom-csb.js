@@ -12,7 +12,7 @@ Hooks.on("renderActorSheet", (app, html, data) => {
     input.trigger("change");
   }); 
 
-  // ATTRIBUTE PIPS //  
+  // ATTRIBUTE S //  
   const fields = ["StrValue", "IntValue", "AgiValue", "ResValue", "ForValue", "ChaValue"];
 
   for (const key of fields) {
@@ -34,7 +34,6 @@ Hooks.on("renderActorSheet", (app, html, data) => {
       position: "absolute",
     });
 
-    // Only add pip display if not already present
     if (!input.siblings(".pip-display").length) {
       const pipDisplay = $(`<div class="pip-display" style="display: flex; gap: 4px; margin: 0 6px;"></div>`);
       input.after(pipDisplay);
@@ -47,10 +46,10 @@ Hooks.on("renderActorSheet", (app, html, data) => {
 
       for (let i = 1; i <= 5; i++) {
         const pip = $(`<div class="pip" style="
-          width: 12px;
-          height: 12px;
+          width: 10px;
+          height: 10px;
           border-radius: 50%;
-          background-color: ${i <= value ? 'limegreen' : '#333'};
+          background-color: ${i <= value ? '#880000' : '#000000EE'};
           transition: background-color 0.2s ease;
         "></div>`);
         pipDisplay.append(pip);
@@ -146,7 +145,7 @@ Hooks.on("renderActorSheet", (app, html, data) => {
         } else if (indexFromRight < totalDamageClamped) {
         box.css("background-color", "#08f"); // blue for stun + physical damage (beyond physical)
         } else {
-        box.css("background-color", "#999"); // white for undamaged
+        box.css("background-color", "#eaeaea"); // white for undamaged
         }
 
         bar.append(box);
@@ -262,8 +261,12 @@ if (app.actor?.type === "character") {
 
 });
 
+//-------------------------------
+// SKILL ROLL
+//-------------------------------
+
 class AxiomRollDialog extends Application {
-  constructor(actor, { skillName, skillDie, attributeKey, attributeDie, focusStep }) {
+  constructor(actor, { skillName, skillDie, attributeKey, attributeDie, focusStep, skillMod = 0, attributeMod = 0 }) {
     super();
     this.actor = actor;
     this.skillName = skillName;
@@ -271,7 +274,10 @@ class AxiomRollDialog extends Application {
     this.attributeKey = attributeKey;
     this.attributeDie = attributeDie;
     this.focusStep = focusStep;
+    this.skillMod = skillMod;
+    this.attributeMod = attributeMod;
   }
+
 
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -285,10 +291,13 @@ class AxiomRollDialog extends Application {
   getData() {
     return {
       skillName: this.skillName,
-      skillDie: `d${this.skillDie}`,
+      skillDie: this.skillDie,               // e.g. "d6"
+      skillMod: this.skillMod ?? 0,
       attributeKey: this.attributeKey,
-      attributeDie: `d${this.attributeDie}`,
-      focusDie: `d${6 + this.focusStep * 2}` // d6 = step 0
+      attributeDie: this.attributeDie,       // e.g. "d8"
+      attributeMod: this.attributeMod ?? 0,
+      focusDie: `d${6 + this.focusStep * 2}`, // this one is calculated normally
+      modifier: 0
     };
   }
 
@@ -300,24 +309,35 @@ class AxiomRollDialog extends Application {
 
             const modifier = parseInt(html.find("input[name='modifier']").val()) || 0;
 
-            const attrDie = `1d${this.attributeDie}`;
-            const skillDie = `1d${this.skillDie}`;
-            const focusDie = `1d${6 + this.focusStep * 2}`;
+            const attrDie = html.find("select[name='attributeDie']").val();  // e.g. "d6"
+            const skillDie = html.find("select[name='skillDie']").val();    // e.g. "d8"
+            const focusDie = html.find("select[name='focusDie']").val();    // e.g. "d10"
 
-            const rollFormula = `${attrDie} + ${skillDie} + ${focusDie}`;
+            const attrMod = parseInt(html.find("input[name='attributeMod']").val()) || 0;
+            const skillMod = parseInt(html.find("input[name='skillMod']").val()) || 0;
+            const flatMod = parseInt(html.find("input[name='modifier']").val()) || 0;
+
+            const rollFormula = `1${attrDie} + ${attrMod} + 1${skillDie} + ${skillMod} + 1${focusDie}`;
+
             console.log("[Axiom] Roll formula:", rollFormula);
 
             const roll = await Roll.create(rollFormula);
             await roll.evaluate();
 
             const results = roll.terms
-            .filter(t => t instanceof foundry.dice.terms.Die)
-            .map(die => die.results[0].result);
+              .filter(t => t instanceof foundry.dice.terms.Die)
+              .map(die => die.results[0].result);
 
-            console.log("[Axiom] Raw results:", results);
+            // Apply modifiers
+            const modified = [
+              results[0] + attrMod,
+              results[1] + skillMod,
+              results[2] // no mod for focus
+            ];
 
-            const bestTwo = results.sort((a, b) => b - a).slice(0, 2);
-            const total = bestTwo.reduce((sum, v) => sum + v, 0) + modifier;
+            // Keep best 2 and total
+            const bestTwo = modified.sort((a, b) => b - a).slice(0, 2);
+            const total = bestTwo.reduce((sum, v) => sum + v, 0) + flatMod;
             roll._total = total;
 
             const flavor = `<strong>${this.skillName} Test</strong><br>
@@ -350,21 +370,21 @@ function openRollFromRow({ row }) {
   }
 
   const skillName = row.skill;
-  const skillDieRaw = row.skillDie ?? "d6";
-  const skillDie = parseInt(skillDieRaw.replace("d", "")) || 6;
+  const skillDie = row.skillDie ?? "d6";
+  const skillMod = row.skillMod ?? 0;
 
   const attributeKey = row.attr;
-  const attrDieRaw = row.attrDie ?? "d6";
-  const attributeDie = parseInt(attrDieRaw.replace("d", "")) || 6;
+  const attributeDie = row.attrDie ?? "d6";
+  const attributeMod = row.attributeMod ?? 0;
 
   console.log("[Axiom] Final roll setup:", {
     actor: actor.name,
     skillName,
-    skillDieRaw,
     skillDie,
+    skillMod,
     attributeKey,
-    attrDieRaw,
-    attributeDie
+    attributeDie,
+    attributeMod
   });
 
   new AxiomRollDialog(actor, {
@@ -372,6 +392,49 @@ function openRollFromRow({ row }) {
     skillDie,
     attributeKey,
     attributeDie,
-    focusStep: 0 // update later if needed
+    skillMod,
+    attributeMod,
+    focusStep: 0
   }).render(true);
 }
+
+//------------------------
+// AMMO COUNT
+//------------------------
+
+Hooks.on("renderActorSheet", (app, html, data) => {
+  html.find(".ammo-counter").each((_, el) => {
+    const $el = $(el);
+    const classList = $el.attr("class") ?? "";
+    
+    // Match the item ID from the class string
+    const match = classList.match(/axiomCharacterWeapons\.([a-zA-Z0-9]+)\.itemCurrentAmmo/);
+    if (!match) return;
+
+    const itemId = match[1];
+    const actor = app.actor;
+    const item = actor.items.get(itemId);
+    if (!item) return;
+
+    $el.on("mousedown", async (event) => {
+      event.preventDefault();
+
+      const current = item.system.props.axiomWeaponCurrentAmmo ?? 0;
+      const cap = item.system.props.axiomWeaponAmmoCap ?? 0;
+      let newVal = current;
+
+      if (event.button === 0) {
+        newVal = Math.max(current - 1, 0);
+      } else if (event.button === 2) {
+        newVal = Math.min(current + 1, cap);
+      } else {
+        return;
+      }
+
+      await item.update({ "system.props.axiomWeaponCurrentAmmo": newVal });
+    });
+
+    // Prevent context menu on right click
+    $el.on("contextmenu", (e) => e.preventDefault());
+  });
+});
