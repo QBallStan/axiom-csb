@@ -1,0 +1,17 @@
+.axiom-csb-mod-input {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.axiom-csb-mod-input input {
+  width: 48px;
+  text-align: center;
+}
+
+.axiom-csb-mod-input button {
+  width: 24px;
+  height: 24px;
+  font-weight: bold;
+  padding: 0;
+}

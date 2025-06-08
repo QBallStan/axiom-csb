@@ -6,6 +6,30 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.0.4] - 2025-06-08
+
+### Added
+- **Dice So Nice Integration**: Custom color sets for Attribute (Blue), Skill (Red), and Focus (Amber) dice.
+- **Initiative Override**: Custom initiative formula using Agility, Resolve, and Focus. Keeps best two results. Results are sent to chat and shown via Dice So Nice.
+- **Focus Die Coloring**: All rolls now color Attribute, Skill, and Focus dice appropriately using the Dice So Nice sets.
+- **Roll Modifier UI**: Plus/minus buttons added to the skill roll dialog to adjust modifiers directly from the UI.
+
+### Changed
+- **Roll Dialog**:
+  - Modifier calculation now includes attribute, skill, user, and penalty modifiers in a single total.
+  - Chat output improved to show individual die rolls, modifiers, best two dice, and the final total with Complication warnings.
+- **Skill Pip Display**: Replaced circular pips with pentagon-segment SVG visuals to match attribute style.
+- **Attribute Pip Display**: Redesigned to use a 5-segment pentagon SVG, one segment per level.
+- **Internal Cleanup**: Improved class structure and value handling across rendered inputs.
+
+## [0.0.3] - 2025-06-08
+
+### Added
+- **Ammo Count**: Added the ability to click the ammo count to adjust quantity.
+
+### Changed
+- **Roll Dialog**: Now also counts modifiers.
+
 ## [0.0.2] - 2025-06-05
 
 ### Added
