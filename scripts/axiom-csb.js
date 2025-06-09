@@ -400,9 +400,6 @@ class AxiomRollDialog extends Application {
         await roll.evaluate();
 
         const diceTerms = applyAxiomDieColors(roll);
-        if (game.dice3d) {
-          game.dice3d.showForRoll(roll, game.user, true);
-        }
         
         const results = diceTerms.map(die => die.results[0].result);
 
@@ -433,11 +430,11 @@ class AxiomRollDialog extends Application {
           <strong>Best 2:</strong> ${bestTwo.join(" + ")} + General Mod (${userMod}) + Penalty (${penalty}) = <strong>${total}</strong>
         `;
 
-        // await roll.toMessage({
-        // speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-        // flavor: flavor,
-        // rollMode: game.settings.get("core", "rollMode")
-        // })
+        await roll.toMessage({
+        speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+        flavor: flavor,
+        rollMode: game.settings.get("core", "rollMode")
+        })
 
         this.close();
       });
@@ -560,18 +557,8 @@ Hooks.once("ready", () => {
         content: chatContent,
         ...messageOptions
       });
-
-      if (game.dice3d) {
-        await game.dice3d.showForRoll(roll, game.user, true);
-      }
     }
 
     return this;
   };
 });
-
-
-
-
-
-

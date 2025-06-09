@@ -14,13 +14,11 @@
       "discord": "plexistan"
     }
   ],
-  "scripts": [
-    "scripts/axiom-csb.js"
-  ],
+  "scripts": [],
   "styles": [
     "styles/axiom-csb.css"
   ],
-  "esmodules": [],
+  "esmodules": ["scripts/axiom-csb.js"],
   "languages": [],
   "packs": [], 
   "url": "https://github.com/QBallStan/axiom-csb",
