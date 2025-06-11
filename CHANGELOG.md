@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.0.5] - 2025-06-08
+
+### Changed
+
+- **Codebase Restructure**:
+  
+  - Split the core `axiom-csb.js` into modular subfiles for better maintainability.
+    
+  - Organized functionality into separate script files (e.g., `roll-dialog.js`, `init-hooks.js`, `actor-sheet.js`, etc.).
+    
+  - Main entry point now imports and registers modular components.
+
 ## [0.0.4] - 2025-06-08
 
 ### Added
