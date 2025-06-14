@@ -1,240 +1,880 @@
+// === IMPORTS ===
+import { getDieForStat, getDieForSkill, getDieLabel } from "../axiom-csb.js";
+import { AttributeConfigWindow } from "./app/attConfig.js";
+import { HealthConfigWindow } from "./app/healthConfig.js";
+import { AxiomRollDialog } from "./rollDialog.js";
+
+// === HOOKS ===
+// Re-render actor when skillBaseDie changes
+Hooks.on("updateItem", (item, changes, options, userId) => {
+  const actor = item.parent;
+  if (!actor || !actor.sheet?.rendered) return;
+
+  if (
+    "system" in changes &&
+    "props" in changes.system &&
+    "skillBaseDie" in changes.system.props
+  ) {
+    actor.render();
+  }
+});
+
+const EQUIP_OPTIONS_BY_TYPE = {
+  weapon: ["stored", "backpack", "carried", "offHand", "mainHand", "twoHands"],
+  armor: ["stored", "backpack", "carried", "equipped"],
+  default: ["stored", "backpack", "carried"],
+};
+
+const EQUIP_LOCATIONS = {
+  stored: { icon: "fa-box", label: "Stored" },
+  backpack: { icon: "fa-backpack", label: "Backpack" },
+  carried: { icon: "fa-suitcase", label: "Carried" },
+  offHand: { icon: "fa-hand fa-flip-horizontal", label: "Off Hand" },
+  mainHand: { icon: "fa-hand", label: "Main Hand" },
+  twoHands: { icon: "fa-hands", label: "Two Hands" },
+  equipped: { icon: "fa-shirt", label: "Equipped" },
+};
+
+const STRENGTH_BONUS_TABLE = {
+  "d4-2": -2,
+  "d4-1": -1,
+  d4: 0,
+  d6: 1,
+  d8: 2,
+  d10: 3,
+  d12: 4,
+  "d12+1": 5,
+  "d12+2": 6,
+  "d12+3": 7,
+};
+
+function renderEquipButton(button, locationKey) {
+  const data = EQUIP_LOCATIONS[locationKey] ?? EQUIP_LOCATIONS.stored;
+  button
+    .empty()
+    .append(
+      `<i class="fa-solid ${data.icon}" style="margin-right: 4px;"></i>${data.label}`
+    );
+}
+
+// === REGISTER ACTOR SHEET ===
 export function registerActorSheet() {
-    Hooks.on("renderActorSheet", (app, html) => {
-        // Enables +/– buttons on number fields
-        html.find(".custom-system-number-field-control").on("click", event => {
-        const input = $(event.currentTarget).siblings("input[type='number'], input[type='range'], input[type='text']");
-        input.trigger("change");
-        });
+  Hooks.on("renderActorSheet", async (app, html) => {
+    // === 1. GLOBAL SETUP ===
+    // Delegate click on any plus/minus button within number fields
+    html.find(".custom-system-number-field-control").on("click", (event) => {
+      const input = $(event.currentTarget).siblings(
+        "input[type='number'], input[type='range'], input[type='text']"
+      );
+      input.trigger("change");
+    });
 
-        // Attribute Pips
-        const fields = ["StrValue", "IntValue", "AgiValue", "ResValue", "ForValue", "ChaValue"];
-        for (const key of fields) {
-        const container = html.find(`.${key}`);
-        if (!container.length) continue;
+    const actor = app.actor;
+    const statKeys = ["Str", "Agi", "For", "Int", "Cha", "Res"];
+    const config = (await actor.getFlag("axiom-csb", "attributeConfig")) ?? {};
 
-        const input = container.find(`input[type='range'], input[name='system.props.${key}']`).last();
-        if (!input.length) {
-            console.warn(`[Axiom//Pips] Input for ${key} not found.`);
-            continue;
+    // Initialize attribute values to default 3 if missing
+    const updates = {};
+    for (const key of statKeys) {
+      const path = `system.props.${key}Value`;
+      const current = foundry.utils.getProperty(actor, path);
+      if (current == null || current < 1) {
+        updates[path] = 3;
+      }
+    }
+    if (Object.keys(updates).length > 0) await actor.update(updates);
+
+    // === 2. ATTRIBUTE UI: Pips, Labels, Buttons ===
+    // - Pentagon rendering
+    for (const key of statKeys) {
+      const value =
+        parseInt(
+          foundry.utils.getProperty(actor, `system.props.${key}Value`)
+        ) ?? 3;
+      const base = parseInt(config[`${key}BaseDie`] ?? 3);
+      const final = value;
+      const label = getDieLabel(final);
+      const shownPips = Math.max(1, value - base + 1);
+
+      const container = html.find(
+        `.custom-system-label-label[data-name="actor${key}Value"]`
+      );
+      if (container.length) {
+        const pentagon =
+          $(`<svg width="69" height="69" viewBox="0 0 100 100" class="pentagon-svg">
+          <polygon points="50,5 95,35 77,90 23,90 5,35" fill="none" stroke="#666" stroke-width="2"/>
+          ${[...Array(5)]
+            .map((_, i) => {
+              const [[x1, y1], [x2, y2]] = [
+                [
+                  [50, 5],
+                  [95, 35],
+                ],
+                [
+                  [95, 35],
+                  [77, 90],
+                ],
+                [
+                  [77, 90],
+                  [23, 90],
+                ],
+                [
+                  [23, 90],
+                  [5, 35],
+                ],
+                [
+                  [5, 35],
+                  [50, 5],
+                ],
+              ][i];
+              const stroke = i < shownPips ? "#880000" : "#333";
+              return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${stroke}" stroke-width="5"/>`;
+            })
+            .join("")}
+          <text x="50" y="58" text-anchor="middle" fill="#000" font-size="16" font-weight="bold">${label}</text>
+        </svg>`);
+
+        container
+          .empty()
+          .append($(`<div class="stat-block"></div>`).append(pentagon))
+          .attr("data-value", label);
+      }
+
+      const labelContainer = html.find(
+        `.custom-system-label-label[data-name="actor${key}Label"]`
+      );
+      if (labelContainer.length) {
+        const minus = $(
+          `<button class="stat-btn minus" data-stat="${key}">–</button>`
+        );
+        const plus = $(
+          `<button class="stat-btn plus" data-stat="${key}">+</button>`
+        );
+        const labelText = labelContainer.text();
+        const wrapper = $(`<span class="label-with-buttons"></span>`)
+          .append(minus)
+          .append(`<span>${labelText}</span>`)
+          .append(plus);
+        labelContainer.empty().append(wrapper);
+      }
+    }
+
+    // - +/- buttons for attributes
+    html.find(".stat-btn").on("click", async function () {
+      const stat = $(this).data("stat");
+      const path = `system.props.${stat}Value`;
+      const current = parseInt(foundry.utils.getProperty(actor, path)) ?? 3;
+      const config =
+        (await actor.getFlag("axiom-csb", "attributeConfig")) ?? {};
+      const base = parseInt(config[`${stat}BaseDie`] ?? 3);
+      const delta = $(this).hasClass("plus") ? 1 : -1;
+      const min = base;
+      const max = base + 4;
+      const newVal = Math.max(min, Math.min(current + delta, max));
+      await actor.update({ [path]: newVal });
+    });
+
+    // === 3. HEALTH BAR RENDERING ===
+    const container = html.find(".actorHealthBar");
+    if (container.length) {
+      if (container.find(".health-bar-wrapper").length === 0) {
+        container.empty().append(`
+      <div class="health-bar-wrapper" style="position: relative; display: flex; gap: 4px;">
+        <div class="health-bar base" style="display: flex; gap: 4px; position: relative; z-index: 1;"></div>
+        <div class="health-bar blue" style="display: flex; gap: 4px; position: absolute; top: 0; left: 0; z-index: 2; pointer-events: none;"></div>
+        <div class="health-bar red" style="display: flex; gap: 4px; position: absolute; top: 0; left: 0; z-index: 3; pointer-events: none;"></div>
+      </div>
+    `);
+      }
+
+      const forLabel = getDieForStat(actor, "For");
+
+      let modifier = 0;
+      const match = forLabel.match(/^d(\d+)([+-]\d+)?$/);
+      if (match) {
+        const base = parseInt(match[1]);
+        const bonus = match[2] ? parseInt(match[2]) : 0;
+        modifier = Math.floor(base / 2) + bonus;
+      } else if (forLabel === "d4-1") {
+        modifier = Math.floor(4 / 2) - 1;
+      } else if (forLabel === "d4-2") {
+        modifier = Math.floor(4 / 2) - 2;
+      } else {
+        modifier = 3;
+      }
+
+      const healthConfig =
+        (await actor.getFlag("axiom-csb", "healthConfig")) ?? {};
+      const bonusBoxes = parseInt(healthConfig.healthBonus ?? 0);
+
+      const boxCount = 6 + modifier + bonusBoxes;
+
+      const physicalDamage =
+        parseInt(
+          foundry.utils.getProperty(actor.system, "props.actorPhysicalDamage")
+        ) || 0;
+      const stunDamage =
+        parseInt(
+          foundry.utils.getProperty(actor.system, "props.actorStunDamage")
+        ) || 0;
+
+      const baseBar = container.find(".health-bar.base");
+      const blueBar = container.find(".health-bar.blue");
+      const redBar = container.find(".health-bar.red");
+
+      baseBar.empty();
+      blueBar.empty();
+      redBar.empty();
+
+      for (let i = 0; i < boxCount; i++) {
+        baseBar.append(
+          `<div class="hp-box" style="background-color: #eaeaea;"></div>`
+        );
+
+        const indexFromRight = boxCount - 1 - i;
+
+        if (
+          indexFromRight < stunDamage + physicalDamage &&
+          indexFromRight >= physicalDamage
+        ) {
+          blueBar.append(
+            `<div class="hp-box" style="background-color: #08f;"></div>`
+          );
+        } else {
+          blueBar.append(
+            `<div class="hp-box" style="background-color: transparent;"></div>`
+          );
         }
 
-        input.css({ opacity: "0", width: "0px", height: "0px", pointerEvents: "none", position: "absolute" });
-
-        if (!input.siblings(".pip-display").length) {
-            const pipDisplay = $(`<div class="pentagon-display"></div>`);
-            input.after(pipDisplay);
+        if (indexFromRight < physicalDamage) {
+          redBar.append(
+            `<div class="hp-box" style="background-color: #800;"></div>`
+          );
+        } else {
+          redBar.append(
+            `<div class="hp-box" style="background-color: transparent;"></div>`
+          );
         }
+      }
+    }
 
-        const renderPips = () => {
-            const pipDisplay = container.find(".pentagon-display");
-            pipDisplay.empty();
-            const value = parseInt(input.val()) || 1;
-            const svg = $(`
-            <svg width="69" height="69" viewBox="0 0 100 100" class="pentagon-svg">
-                <polygon points="50,5 95,35 77,90 23,90 5,35" class="pentagon-outline"/>
-                ${[...Array(5)].map((_, i) => {
-                const sides = [
-                    [[50, 5], [95, 35]],
-                    [[95, 35], [77, 90]],
-                    [[77, 90], [23, 90]],
-                    [[23, 90], [5, 35]],
-                    [[5, 35], [50, 5]]
-                ];
-                const [[x1, y1], [x2, y2]] = sides[i];
-                return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${i < value ? '#880000' : '#333'}" stroke-width="5"/>`;
-                }).join("")}
-            </svg>
-            `);
-            pipDisplay.append(svg);
+    // === 4. BOONS UI CUSTOMIZATION ===
+    const boonsField = html.find(".actorBoons");
+    if (boonsField.length) {
+      const inputSpan = boonsField.find(".custom-system-number-input-span");
+      const input = inputSpan
+        .find("input[type='number'], input[name*='actorBoons']")
+        .last();
+      if (!input.length) return;
+
+      input.css({
+        opacity: "0",
+        width: "0px",
+        height: "0px",
+        pointerEvents: "none",
+        position: "absolute",
+      });
+      inputSpan
+        .find("input[type='text'], input[type='number']")
+        .css("display", "none");
+
+      if (!input.siblings(".boon-display").length) {
+        const display = $(
+          `<div class="boon-display" style="display: flex; gap: 4px; margin: 0 6px;"></div>`
+        );
+        input.after(display);
+      }
+
+      const renderBoons = () => {
+        const display = boonsField.find(".boon-display");
+        display.empty();
+        const value = parseInt(input.val()) || 0;
+        for (let i = 1; i <= 3; i++) {
+          const die = $(
+            `<i class="fa-solid fa-dice-d6" style="font-size: 18px; color: ${
+              i <= value ? "#800" : "#333"
+            };"></i>`
+          );
+          display.append(die);
+        }
+      };
+
+      renderBoons();
+      input.on("input change", () => renderBoons());
+      Hooks.once("updateActor", () => setTimeout(renderBoons, 50));
+    }
+
+    // === 5. DERIVED STATS: Guard, Movement, CorruptionThreshold ===
+    if (actor?.type === "character") {
+      const updates = {};
+      const props = actor.system?.props ?? {};
+
+      // === Damage Penalty Calculation ===
+      const stun = parseInt(props.actorStunDamage ?? 0);
+      const physical = parseInt(props.actorPhysicalDamage ?? 0);
+
+      const healthConfig =
+        (await actor.getFlag("axiom-csb", "healthConfig")) ?? {};
+      const threshold = parseInt(healthConfig.damageThreshold ?? 3);
+
+      const totalDamage = stun + physical;
+      const penalty = Math.floor(totalDamage / threshold) * -1;
+
+      if ((props.actorDamagePenalty ?? 0) !== penalty) {
+        updates["system.props.actorDamagePenalty"] = penalty;
+      }
+
+      // === Corruption Threshold (from Resolve)
+      const resLabel = getDieForStat(actor, "Res"); // e.g., d8, d12+1
+      const resMatch = resLabel.match(/^d(\d+)([+-]\d+)?$/);
+      const resStep = resMatch ? parseInt(resMatch[1]) : 6;
+      const resBonus = resMatch && resMatch[2] ? parseInt(resMatch[2]) : 0;
+      const corruptionThreshold = 2 + Math.floor(resStep / 2) + resBonus;
+      if ((props.actorCorruptionThreshold ?? 0) !== corruptionThreshold) {
+        updates["system.props.actorCorruptionThreshold"] = corruptionThreshold;
+      }
+
+      // === Get skills from actorSkillsDisplay
+      const skillDisplay = actor.system?.props?.actorSkillsDisplay ?? {};
+      const getSkillItemByName = (name) => {
+        const entry = Object.values(skillDisplay).find(
+          (e) => (e.name || "").toLowerCase().trim() === name.toLowerCase()
+        );
+        return entry ? actor.items.get(entry.id) : null;
+      };
+
+      // === Guard (from Melee)
+      let guard = 0;
+      const meleeSkill = getSkillItemByName("melee");
+      if (meleeSkill) {
+        const meleeLabel = getDieForSkill(actor, meleeSkill);
+        const meleeMatch = meleeLabel.match(/^d(\d+)([+-]\d+)?$/);
+        const meleeStep = meleeMatch ? parseInt(meleeMatch[1]) : 6;
+        const meleeBonus =
+          meleeMatch && meleeMatch[2] ? parseInt(meleeMatch[2]) : 0;
+        guard = 6 + Math.floor(meleeStep / 2) + meleeBonus;
+        if ((props.actorGuard ?? 0) !== guard) {
+          updates["system.props.actorGuard"] = guard;
+        }
+      }
+
+      // === Movement (from Athletics)
+      let movement = 0;
+      const athleticsSkill = getSkillItemByName("athletics");
+      if (athleticsSkill) {
+        const athleticsLabel = getDieForSkill(actor, athleticsSkill);
+        const athleticsMatch = athleticsLabel.match(/^d(\d+)([+-]\d+)?$/);
+        const athleticsStep = athleticsMatch ? parseInt(athleticsMatch[1]) : 6;
+        const athleticsBonus =
+          athleticsMatch && athleticsMatch[2] ? parseInt(athleticsMatch[2]) : 0;
+        movement = 6 + Math.floor(athleticsStep / 2) + athleticsBonus;
+        if ((props.actorMovement ?? 0) !== movement) {
+          updates["system.props.actorMovement"] = movement;
+        }
+      }
+
+      // === Apply updates to actor
+      if (Object.keys(updates).length > 0) {
+        await actor.update(updates);
+      }
+
+      // === Update displayed values on sheet ===
+      const renderDerivedStat = (stat, value) => {
+        html
+          .find(`.custom-system-label-label[data-name="actor${stat}"]`)
+          .empty()
+          .text(value)
+          .attr("data-value", value);
+      };
+
+      renderDerivedStat("Guard", guard);
+      renderDerivedStat("Movement", movement);
+      renderDerivedStat("CorruptionThreshold", corruptionThreshold);
+
+      // === Bind corruption input logic ===
+      const corruptionField = html.find(".actorCorruptionValue");
+      const visibleInput = corruptionField.find(`input[type="text"]`);
+      const hiddenInput = corruptionField.find(
+        `input[name="system.props.actorCorruptionValue"]`
+      );
+      const currentCorruption = parseInt(hiddenInput.val() || "0") || 0;
+
+      visibleInput.val(currentCorruption);
+
+      visibleInput.on("change blur", () => {
+        const newValue = parseInt(visibleInput.val() || "0");
+        hiddenInput.val(newValue).trigger("change");
+      });
+
+      visibleInput.on("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          visibleInput.blur(); // triggers change handler
+        }
+      });
+
+      // === Armor (from equipped armor pieces) ===
+      let totalArmor = 0;
+
+      for (const item of actor.items) {
+        const props = item.system?.props ?? {};
+        const isEquipped = props.itemLocation === "equipped";
+        const armorValue = parseInt(props.armorChest ?? 0);
+
+        if (isEquipped && !isNaN(armorValue)) {
+          totalArmor += armorValue;
+        }
+      }
+
+      if ((props.actorArmor ?? 0) !== totalArmor) {
+        updates["system.props.actorArmor"] = totalArmor;
+      }
+
+      renderDerivedStat("Armor", totalArmor);
+      renderDerivedStat("DamagePenalty", penalty); // optional visual update
+    }
+
+    if (actor.system?.props?.actorArmor == null) {
+      await actor.update({ "system.props.actorArmor": 0 });
+    }
+    if (actor.system?.props?.actorDamagePenalty == null) {
+      await actor.update({ "system.props.actorDamagePenalty": 0 });
+    }
+
+    // === 6. SKILL UI: Pips, Recap, Attribute Display ===
+    // - Value pips
+    html
+      .find(`.custom-system-label-label[data-name$=".actorSkillValue"]`)
+      .each(function () {
+        const container = $(this);
+        const dataName = container.data("name");
+        const itemId = dataName.split(".")[1];
+        const item = actor.items.get(itemId);
+        if (!item) return;
+
+        const skillValue = parseInt(item.system?.props?.skillValue ?? 1);
+        const skillBase = parseInt(item.system?.props?.skillBaseDie ?? 3);
+        const skillMod = parseInt(item.system?.props?.skillDieMod ?? 0);
+        const clamped = Math.max(1, Math.min(skillValue, 5));
+        const finalStep = skillBase + (skillValue - 1) + skillMod;
+        const dieLabel = getDieLabel(finalStep);
+
+        const renderPips = (val) => {
+          return `
+          <div class="skill-pip-block">
+            <button type="button" class="skill-btn minus" data-id="${itemId}">–</button>
+            <div class="pip-display">
+              ${[...Array(5)]
+                .map(
+                  (_, i) =>
+                    `<span class="skill-pip" style="color: ${
+                      i < val ? "#880000" : "#333"
+                    }">⬤</span>`
+                )
+                .join("")}
+            </div>
+            <button type="button" class="skill-btn plus" data-id="${itemId}">+</button>
+          </div>`;
         };
 
-        renderPips();
-        input.on("input change", () => renderPips());
-        Hooks.once("updateActor", () => setTimeout(renderPips, 50));
-        }
+        container
+          .empty()
+          .append(renderPips(clamped))
+          .attr("data-value", dieLabel);
+      });
 
-        // Skill Pips
-        html.find("[class*='CharacterSkillLevel']").each((_, el) => {
-        const container = $(el);
-        const input = container.find("input[type='range'], input[name*='CharacterSkillLevel']").last();
-        if (!input.length) return;
+    // - Recap display with roll handler
+    html
+      .find(`.custom-system-label-label[data-name$=".actorSkillRecap"]`)
+      .each(function () {
+        const container = $(this);
+        const dataName = container.data("name");
+        const itemId = dataName.split(".")[1];
+        const item = actor.items.get(itemId);
+        if (!item) return;
 
-        input.css({ opacity: "0", width: "0px", height: "0px", pointerEvents: "none", position: "absolute" });
-        if (!input.siblings(".pip-display").length) {
-            const pipDisplay = $(`<div class="pip-display" style="display: flex; gap: 4px; margin: 0 6px;"></div>`);
-            input.after(pipDisplay);
-        }
+        const statKey = item.system?.props?.skillLinkedAtt ?? "Int";
 
-        const renderPips = () => {
-            const pipDisplay = container.find(".pip-display");
-            pipDisplay.empty();
-            const rawValue = parseInt(input.val()) || 3;
-            const value = rawValue - 2;
+        const skillValue = parseInt(item.system?.props?.skillValue ?? 1);
+        const skillBase = parseInt(item.system?.props?.skillBaseDie ?? 3);
+        const finalStep = skillBase + (skillValue - 1);
+        const skillDie = getDieLabel(finalStep);
+        const attributeDie = getDieForStat(actor, statKey);
+        const recap = `${skillDie}+${attributeDie}`;
 
-            const svgNS = "http://www.w3.org/2000/svg";
-            const svg = document.createElementNS(svgNS, "svg");
-            svg.setAttribute("width", "20");
-            svg.setAttribute("height", "20");
-            svg.setAttribute("viewBox", "0 0 100 100");
-            svg.classList.add("pentagon-skill-svg");
+        container
+          .html(
+            `<i class="fa-solid fa-dice" style="margin-right: 4px;"></i> ${recap}`
+          )
+          .attr("data-value", recap)
+          .css("cursor", "pointer");
+        container.css("cursor", "pointer").on("click", async () => {
+          const skillName = item.name;
+          const skillDie = getDieForSkill(actor, item);
+          const skillMod = parseInt(item.system?.props?.skillDieMod ?? 0);
 
-            const center = [50, 50];
-            const radius = 45;
-            const angles = [...Array(6)].map((_, i) => (Math.PI * 2 * i) / 5 - Math.PI / 2);
+          const attributeKey = statKey;
+          const attributeDie = getDieForStat(actor, attributeKey);
+          const config =
+            (await actor.getFlag("axiom-csb", "attributeConfig")) ?? {};
+          const attributeMod = parseInt(config[`${attributeKey}DieMod`] ?? 0);
 
-            for (let i = 0; i < 5; i++) {
-            const a1 = angles[i];
-            const a2 = angles[(i + 1) % 5];
-            const x1 = center[0] + Math.cos(a1) * radius;
-            const y1 = center[1] + Math.sin(a1) * radius;
-            const x2 = center[0] + Math.cos(a2) * radius;
-            const y2 = center[1] + Math.sin(a2) * radius;
-
-            const path = document.createElementNS(svgNS, "path");
-            path.setAttribute("d", `M${center[0]},${center[1]} L${x1},${y1} L${x2},${y2} Z`);
-            path.setAttribute("fill", i < value ? "#880000" : "#333");
-            svg.appendChild(path);
-            }
-
-            pipDisplay.append(svg);
-        };
-
-        renderPips();
-        input.on("input change", () => renderPips());
-        Hooks.once("updateActor", () => setTimeout(renderPips, 50));
+          new AxiomRollDialog(actor, {
+            skillName,
+            skillDie,
+            attributeKey,
+            attributeDie,
+            skillMod,
+            attributeMod,
+            penalty: 0,
+            focusStep: 0,
+          }).render(true);
         });
+      });
 
-        // Health Bar
+    html.find(".skill-btn").on("click", async function () {
+      const itemId = $(this).data("id");
+      const item = actor.items.get(itemId);
+      if (!item) return;
+      const current = parseInt(item.system?.props?.skillValue ?? 1);
+      const delta = $(this).hasClass("plus") ? 1 : -1;
+      const newVal = Math.max(1, Math.min(current + delta, 5));
+      await item.update({ "system.props.skillValue": newVal });
+      await actor.render();
+    });
+
+    // - Attribute column abbreviation
+    html
+      .find(`.custom-system-label-label[data-name$=".actorSkillAtt"]`)
+      .each(function () {
+        const container = $(this);
+        const dataName = container.data("name");
+        const itemId = dataName.split(".")[1];
+        const item = actor.items.get(itemId);
+        if (!item) return;
+        const key = item.system?.props?.skillLinkedAtt ?? "Int";
+        container.text(key).attr("data-value", key);
+      });
+
+    // === 7. CONFIG BUTTONS ===
+    // - Attributes Config
+    html
+      .find(`.custom-system-label-label[data-name="actorAttConfig"]`)
+      .each(function () {
+        const container = $(this);
+        const button = $(
+          `<button class="att-config-button" title="Configure Attributes"><i class="fas fa-cog"></i></button>`
+        );
+
+        container.empty().append(button);
+
+        button.on("click", (ev) => {
+          if (ev.detail === 0) {
+            return;
+          }
+
+          new AttributeConfigWindow(actor).render(true);
+        });
+      });
+
+    // - Health Config
+    html
+      .find(`.custom-system-label-label[data-name="actorHealthConfig"]`)
+      .each(function () {
+        const container = $(this);
+        const button = $(
+          `<button class="health-config-button" title="Configure Health"><i class="fas fa-cog"></i></button>`
+        );
+        container.empty().append(button);
+
+        button.on("click", (ev) => {
+          if (ev.detail === 0) return;
+          new HealthConfigWindow(actor).render(true);
+        });
+      });
+
+    // === 8. ATTRIBUTE ROLL BUTTON (Dual Attribute Dice) ===
+    html
+      .find(`.custom-system-label-label[data-name="actorAttRoll"]`)
+      .each(function () {
+        const container = $(this);
+        const iconHtml = `<i class="fa-solid fa-dice" style="margin-right: 4px;"></i>`;
+        container.html(iconHtml);
+        container.css("cursor", "pointer");
+
+        container.on("click", async () => {
+          const att1Key = html
+            .find("select[name='system.props.actorAtt_1']")
+            .val();
+          const att2Key = html
+            .find("select[name='system.props.actorAtt_2']")
+            .val();
+          const config =
+            (await actor.getFlag("axiom-csb", "attributeConfig")) ?? {};
+
+          const att1Value =
+            parseInt(
+              foundry.utils.getProperty(actor, `system.props.${att1Key}Value`)
+            ) ?? 3;
+          const att2Value =
+            parseInt(
+              foundry.utils.getProperty(actor, `system.props.${att2Key}Value`)
+            ) ?? 3;
+
+          const att1Die = getDieLabel(att1Value);
+          const att2Die = getDieLabel(att2Value);
+
+          const att1Mod = parseInt(config[`${att1Key}DieMod`] ?? 0);
+          const att2Mod = parseInt(config[`${att2Key}DieMod`] ?? 0);
+
+          const skillName = `${att1Key} + ${att2Key}`;
+
+          new AxiomRollDialog(actor, {
+            skillName,
+            skillDie: att2Die,
+            skillMod: att2Mod,
+            attributeKey: att1Key,
+            attributeDie: att1Die,
+            attributeMod: att1Mod,
+            penalty: 0,
+            focusStep: 0,
+            dualAttribute: true,
+          }).render(true);
+        });
+      });
+
+    // === 9. WEAPON ROLL BUTTONS ===
+    html
+      .find(`.custom-system-label-label[data-name$=".weaponRoll"]`)
+      .each(function () {
+        const container = $(this);
+        const dataName = container.data("name"); // e.g. "actorWeaponsDisplay.XYZ.weaponRoll"
+        const itemId = dataName.split(".")[1]; // grab the dynamic ID part
+
+        const item = app.actor.items.get(itemId);
+        if (!item) return;
+
+        const props = item.system?.props ?? {};
+        container
+          .html(`<i class="fa-solid fa-dice" style="margin-right: 4px;"></i>`)
+          .css("cursor", "pointer");
+
+        container.on("click", async () => {
+          const actor = app.actor;
+
+          const weaponSkillName = (props.weaponSkill || "")
+            .trim()
+            .toLowerCase();
+          if (!weaponSkillName) {
+            return ui.notifications.warn("No skill set for this weapon.");
+          }
+
+          const skillEntry = Object.values(
+            actor.system.props.actorSkillsDisplay ?? {}
+          ).find(
+            (s) => (s.name || "").trim().toLowerCase() === weaponSkillName
+          );
+
+          if (!skillEntry) {
+            return ui.notifications.warn(
+              `No matching skill found for: ${weaponSkillName}`
+            );
+          }
+
+          const skillItem = actor.items.get(skillEntry.id);
+          if (!skillItem) {
+            return ui.notifications.warn("Skill item not found.");
+          }
+
+          const skillKey = skillItem.system?.props?.skillLinkedAtt ?? "Int";
+          const skillDie = getDieForSkill(actor, skillItem);
+          const skillMod = parseInt(skillItem.system?.props?.skillDieMod ?? 0);
+          const config =
+            (await actor.getFlag("axiom-csb", "attributeConfig")) ?? {};
+          const attributeDie = getDieForStat(actor, skillKey);
+          const attributeMod = parseInt(config[`${skillKey}DieMod`] ?? 0);
+
+          new AxiomRollDialog(actor, {
+            skillName: skillItem.name,
+            skillDie,
+            attributeKey: skillKey,
+            attributeDie,
+            skillMod,
+            attributeMod,
+            penalty: 0,
+            focusStep: 0,
+          }).render(true);
+        });
+      });
+
+    // === 10. ITEM CONTROL BUTTONS ===
+    html.find(".item-edit").each(function () {
+      this.style.cursor = "pointer";
+
+      this.addEventListener("click", async (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const row = $(this).closest("tr");
+        const link = row.find("a.content-link[data-id]").get(0);
+        if (!link) {
+          console.warn("[Axiom] Edit button clicked but item link not found");
+          return;
+        }
+
+        const itemId = link.getAttribute("data-id");
         const actor = app.actor;
-        const container = html.find(".axiomCharacterHealthBar");
-        if (container.length) {
-        const forDie = foundry.utils.getProperty(actor.system, "props.ForDieLabel") || "d6";
-        const dieStep = parseInt(forDie.replace(/[^\d]/g, "")) || 6;
-        const boxCount = 6 + Math.floor(dieStep / 2);
+        const item = actor.items.get(itemId);
 
-        const physicalDamage = parseInt(foundry.utils.getProperty(actor.system, "props.axiomCharacterPhysicalDamage")) || 0;
-        const stunDamage = parseInt(foundry.utils.getProperty(actor.system, "props.axiomCharacterStunDamage")) || 0;
-        const totalDamage = Math.min(physicalDamage + stunDamage, boxCount);
-
-        const bar = container.find(".health-bar");
-        bar.empty();
-        for (let i = 0; i < boxCount; i++) {
-            const indexFromRight = boxCount - 1 - i;
-            const box = $(`<div class="hp-box"></div>`);
-            if (indexFromRight < physicalDamage) box.css("background-color", "#800");
-            else if (indexFromRight < totalDamage) box.css("background-color", "#08f");
-            else box.css("background-color", "#eaeaea");
-            bar.append(box);
+        if (item) {
+          item.sheet.render(true);
+        } else {
+          console.warn(`[Axiom] No item found with ID: ${itemId}`);
         }
-        }
+      });
+    });
+    html.find(".favorite-status").each(function () {
+      this.style.cursor = "pointer";
 
-        // Boons
-        const boonsField = html.find(".axiomCharacterBoonsCount");
-        if (boonsField.length) {
-        const inputSpan = boonsField.find(".custom-system-number-input-span");
-        const input = inputSpan.find("input[type='number'], input[name*='axiomCharacterBoonsCount']").last();
-        if (!input.length) return;
+      this.addEventListener("click", async (event) => {
+        event.preventDefault();
+        event.stopPropagation();
 
-        input.css({ opacity: "0", width: "0px", height: "0px", pointerEvents: "none", position: "absolute" });
-        inputSpan.find("input[type='text'], input[type='number']").css("display", "none");
+        const row = $(this).closest("tr");
+        const link = row.find("a.content-link[data-id]").get(0);
+        if (!link) return;
 
-        if (!input.siblings(".boon-display").length) {
-            const display = $(`<div class="boon-display" style="display: flex; gap: 4px; margin: 0 6px;"></div>`);
-            input.after(display);
-        }
-
-        const renderBoons = () => {
-            const display = boonsField.find(".boon-display");
-            display.empty();
-            const value = parseInt(input.val()) || 0;
-            for (let i = 1; i <= 3; i++) {
-            const die = $(`<i class="fa-solid fa-dice-d6" style="font-size: 18px; color: ${i <= value ? '#800' : '#333'};"></i>`);
-            display.append(die);
-            }
-        };
-
-        renderBoons();
-        input.on("input change", () => renderBoons());
-        Hooks.once("updateActor", () => setTimeout(renderBoons, 50));
-        }
-
-        // Derived Stats Calculation
-        if (actor?.type === "character") {
-        const system = actor.toObject().system;
-        const updates = {};
-        const props = system.props || {};
-
-        const forDie = props.ForDieLabel || "d4";
-        const forStep = parseInt(forDie.replace(/[^\d]/g, "")) || 6;
-        const toughness = 2 + Math.floor(forStep / 2);
-        if ((props.axiomCharacterToughness ?? 0) !== toughness) updates["system.props.axiomCharacterToughness"] = toughness;
-
-        const resDie = props.ResDieLabel || "d4";
-        const resStep = parseInt(resDie.replace(/[^\d]/g, "")) || 6;
-        const corruptionThreshold = 2 + Math.floor(resStep / 2);
-        if ((props.axiomCharacterCorruptionThreshold ?? 0) !== corruptionThreshold) updates["system.props.axiomCharacterCorruptionThreshold"] = corruptionThreshold;
-
-        const skillEntries = Array.isArray(props.axiomCharacterSkillPanel) ? props.axiomCharacterSkillPanel : Object.values(props.axiomCharacterSkillPanel || {});
-
-        let meleeStep = 2;
-        for (const skill of skillEntries) {
-            if ((skill?.CharacterSkillName || "").toLowerCase().trim() === "melee") {
-            const die = skill.CharacterSkillDie || "d6";
-            meleeStep = parseInt(die.replace(/[^\d]/g, "")) || 6;
-            break;
-            }
-        }
-        const guard = 6 + Math.floor(meleeStep / 2);
-        if ((props.axiomCharacterGuard ?? 0) !== guard) updates["system.props.axiomCharacterGuard"] = guard;
-
-        let athleticsStep = 2;
-        for (const skill of skillEntries) {
-            if ((skill?.CharacterSkillName || "").toLowerCase().trim() === "athletics") {
-            const die = skill.CharacterSkillDie || "d6";
-            athleticsStep = parseInt(die.replace(/[^\d]/g, "")) || 6;
-            break;
-            }
-        }
-        const movement = 6 + Math.floor(athleticsStep / 2);
-        if ((props.axiomCharacterMovement ?? 0) !== movement) updates["system.props.axiomCharacterMovement"] = movement;
-
-        if (Object.keys(updates).length > 0) actor.update(updates);
-        }
-        // Ammo Counter
-        html.find(".ammo-counter").each((_, el) => {
-        const $el = $(el);
-        const classList = $el.attr("class") ?? "";
-
-        const match = classList.match(/axiomCharacterWeapons\.([a-zA-Z0-9]+)\.itemCurrentAmmo/);
-        if (!match) return;
-
-        const itemId = match[1];
+        const itemId = link.getAttribute("data-id");
         const actor = app.actor;
         const item = actor.items.get(itemId);
         if (!item) return;
 
-        $el.on("mousedown", async (event) => {
-            event.preventDefault();
+        const current = !!item.system?.props?.favorite;
+        const newValue = !current;
 
-            const current = item.system.props.axiomWeaponCurrentAmmo ?? 0;
-            const cap = item.system.props.axiomWeaponAmmoCap ?? 0;
-            let newVal = current;
+        await item.update({ "system.props.favorite": newValue });
 
-            if (event.button === 0) {
-            newVal = Math.max(current - 1, 0);
-            } else if (event.button === 2) {
-            newVal = Math.min(current + 1, cap);
-            } else {
-            return;
-            }
+        // Let CSB update the checkbox automatically
+        const icon = this.querySelector("i");
+        if (icon) {
+          icon.style.color = newValue ? "#880000" : "#333";
+        }
+      });
 
-            await item.update({ "system.props.axiomWeaponCurrentAmmo": newVal });
-        });
+      // Initial visual state on render
+      const row = $(this).closest("tr");
+      const link = row.find("a.content-link[data-id]").get(0);
+      if (!link) return;
 
-        $el.on("contextmenu", (e) => e.preventDefault());
-        });
+      const itemId = link.getAttribute("data-id");
+      const actor = app.actor;
+      const item = actor.items.get(itemId);
+      if (!item) return;
+
+      const icon = this.querySelector("i");
+      if (icon) {
+        const fav = !!item.system?.props?.favorite;
+        icon.style.color = fav ? "#880000" : "#333";
+      }
     });
+
+    html.find(".equip-status").each(function () {
+      const button = $(this);
+      const row = button.closest("tr");
+      const link = row.find("a.content-link[data-id]").get(0);
+      if (!link) return;
+
+      const itemId = link.getAttribute("data-id");
+      const actor = app.actor;
+      const item = actor.items.get(itemId);
+      if (!item) return;
+
+      const current = item.system?.props?.itemLocation ?? "stored";
+      renderEquipButton(button, current);
+
+      // === Menu behavior ===
+      button.off("click").on("click", async (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+
+        // Close any existing menu
+        $(".equip-status-menu").remove();
+
+        const menu = $('<ul class="equip-status-menu"></ul>').css({
+          position: "absolute",
+          top: button.offset().top + button.outerHeight(),
+          left: button.offset().left,
+          background: "#222",
+          border: "1px solid #555",
+          padding: "4px",
+          margin: "0",
+          "z-index": 10000,
+          "border-radius": "4px",
+          "box-shadow": "0 2px 6px rgba(0,0,0,0.5)",
+          "list-style": "none",
+        });
+
+        const type = (item.system?.props?.itemType ?? "default").toLowerCase();
+        const allowed =
+          EQUIP_OPTIONS_BY_TYPE[type] ?? EQUIP_OPTIONS_BY_TYPE.default;
+
+        for (const key of allowed) {
+          const data = EQUIP_LOCATIONS[key];
+          const entry = $(`<li style="padding: 4px 8px; cursor: pointer;">
+    <i class="fa-solid ${data.icon}" style="margin-right: 6px;"></i> ${data.label}
+  </li>`);
+
+          entry.hover(
+            function () {
+              $(this).css("background-color", "#444");
+            },
+            function () {
+              $(this).css("background-color", "transparent");
+            }
+          );
+
+          entry.on("click", async () => {
+            await item.update({ "system.props.itemLocation": key });
+            renderEquipButton(button, key);
+            menu.remove();
+          });
+
+          menu.append(entry);
+        }
+
+        $("body").append(menu);
+
+        // Close if clicking elsewhere
+        $(document).one("click", () => menu.remove());
+      });
+    });
+
+    html
+      .find(".actorWeaponsDisplay .custom-system-dynamicRow")
+      .each(function () {
+        const row = $(this);
+        const itemId = row.find("[data-uuid]").data("id");
+        const item = app.actor.items.get(itemId);
+        if (!item) return;
+
+        const props = item.system?.props ?? {};
+        const strBonusEnabled = String(props.weaponStrBonus) === "true";
+        const baseDamage = parseInt(props.weaponDamage ?? 0);
+        const dmgClassKey = props.weaponDamageClass === "Stun" ? "S" : "P";
+
+        let totalDamage = baseDamage;
+
+        if (strBonusEnabled) {
+          const strDie = getDieForStat(app.actor, "Str");
+          const bonus = STRENGTH_BONUS_TABLE[strDie] ?? 0;
+
+          totalDamage += bonus;
+        }
+
+        row
+          .find(`[data-name$=".weaponDamage"]`)
+          .text(`${totalDamage}${dmgClassKey}`);
+      });
+  });
 }
-
-
-

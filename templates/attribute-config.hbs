@@ -1,0 +1,38 @@
+<form class="attribute-config-form">
+  <table class="attribute-config-table">
+    <thead>
+      <tr>
+        <th>Attribute</th>
+        <th>Base Die</th>
+        <th>Modifier</th>
+      </tr>
+    </thead>
+    <tbody>
+        {{#each attributes}}
+            {{#with this as |att|}}
+            <tr>
+            <td>{{@key}}</td>
+            <td>
+                <select name="{{@key}}BaseDie">
+                    {{#each ../dieOptions as |opt|}}
+                        <option value="{{opt.key}}" {{#if (eq att.baseDie opt.key)}}selected{{/if}}>
+                        {{opt.label}}
+                        </option>
+                    {{/each}}
+                </select>
+            </td>
+            <td>
+                <input type="number" name="{{@key}}DieMod" value="{{att.mod}}" min="-3" max="3" />
+            </td>
+            </tr>
+            {{/with}}
+        {{/each}}
+    </tbody>
+  </table>
+
+  <footer style="text-align: right; margin-top: 1em;">
+    <button type="submit">
+      <i class="fas fa-save"></i> Save Changes
+    </button>
+  </footer>
+</form>

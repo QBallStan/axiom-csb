@@ -1,7 +1,20 @@
 import { applyAxiomDieColors } from "./diceColors.js";
 
 export class AxiomRollDialog extends Application {
-  constructor(actor, { skillName, skillDie, attributeKey, attributeDie, focusStep, skillMod = 0, attributeMod = 0, penalty = 0 }) {
+  constructor(
+    actor,
+    {
+      skillName,
+      skillDie,
+      attributeKey,
+      attributeDie,
+      focusStep,
+      skillMod = 0,
+      attributeMod = 0,
+      penalty = 0,
+      dualAttribute = false
+    }
+  ) {
     super();
     this.actor = actor;
     this.skillName = skillName;
@@ -12,6 +25,7 @@ export class AxiomRollDialog extends Application {
     this.skillMod = skillMod;
     this.attributeMod = attributeMod;
     this.penalty = penalty;
+    this.dualAttribute = dualAttribute;
   }
 
   static get defaultOptions() {
@@ -19,33 +33,34 @@ export class AxiomRollDialog extends Application {
       id: "axiom-roll-dialog",
       title: "Axiom Roll",
       template: "modules/axiom-csb/templates/roll-dialog.hbs",
-      width: 400
+      width: 400,
     });
   }
 
   getData() {
     return {
+      dualAttribute: this.dualAttribute ?? false,
       skillName: this.skillName,
-      skillDie: this.skillDie,
-      skillMod: this.skillMod ?? 0,
+      skillDie: this.skillDie, // e.g. "d8"
+      skillMod: this.skillMod, // flat +X
       attributeKey: this.attributeKey,
-      attributeDie: this.attributeDie,
-      attributeMod: this.attributeMod ?? 0,
-      focusDie: `d${6 + this.focusStep * 2}`,
+      attributeDie: this.attributeDie, // e.g. "d6"
+      attributeMod: this.attributeMod, // flat +Y
+      focusDie: `d${6 + (this.focusStep ?? 0) * 2}`, // computed from step
       modifier: 0,
-      penalty: this.penalty ?? 0
+      penalty: this.penalty ?? 0,
     };
   }
 
   activateListeners(html) {
     super.activateListeners(html);
 
-    html.find(".axiom-csb-mod-input .mod-plus").on("click", event => {
+    html.find(".axiom-csb-mod-input .mod-plus").on("click", (event) => {
       const input = $(event.currentTarget).siblings("input");
       input.val((parseInt(input.val()) || 0) + 1).trigger("change");
     });
 
-    html.find(".axiom-csb-mod-input .mod-minus").on("click", event => {
+    html.find(".axiom-csb-mod-input .mod-minus").on("click", (event) => {
       const input = $(event.currentTarget).siblings("input");
       input.val((parseInt(input.val()) || 0) - 1).trigger("change");
     });
@@ -55,7 +70,8 @@ export class AxiomRollDialog extends Application {
       const skillDie = html.find("select[name='skillDie']").val();
       const focusDie = html.find("select[name='focusDie']").val();
 
-      const attrMod = parseInt(html.find("input[name='attributeMod']").val()) || 0;
+      const attrMod =
+        parseInt(html.find("input[name='attributeMod']").val()) || 0;
       const skillMod = parseInt(html.find("input[name='skillMod']").val()) || 0;
       const userMod = parseInt(html.find("input[name='modifier']").val()) || 0;
       const penalty = this.penalty ?? 0;
@@ -66,19 +82,22 @@ export class AxiomRollDialog extends Application {
       await roll.evaluate();
 
       const diceTerms = applyAxiomDieColors(roll);
-      const results = diceTerms.map(die => die.results[0].result);
+      const results = diceTerms.map((die) => die.results[0].result);
 
       const modified = [
         results[0] + attrMod,
         results[1] + skillMod,
-        results[2]
+        results[2], // focus die has no modifier
       ];
 
       const skillRaw = results[1];
       const isComplication = skillRaw === 1;
 
-      const bestTwo = modified.sort((a, b) => b - a).slice(0, 2);
-      const total = bestTwo.reduce((sum, v) => sum + v, 0) + totalMod;
+      const bestTwo = modified
+        .slice()
+        .sort((a, b) => b - a)
+        .slice(0, 2);
+      const total = bestTwo.reduce((sum, v) => sum + v, 0);
       roll._total = total;
 
       const formatResultLine = (label, die, raw, mod) => {
@@ -89,16 +108,27 @@ export class AxiomRollDialog extends Application {
 
       const flavor = `
         <strong>${this.skillName} Test</strong><br>
-        ${formatResultLine("Attribute Die", this.attributeDie, results[0], attrMod)}<br>
-        ${formatResultLine("Skill Die", this.skillDie, results[1], skillMod)} ${isComplication ? `<span style="color: red;"><strong>(Complication)</strong></span>` : ""}<br>
-        Focus Die: ${6 + this.focusStep * 2} → ${results[2]}<br>
-        <strong>Best 2:</strong> ${bestTwo.join(" + ")} + General Mod (${userMod}) + Penalty (${penalty}) = <strong>${total}</strong>
+        ${formatResultLine("Attribute Die", attrDie, results[0], attrMod)}<br>
+        ${formatResultLine(
+          this.dualAttribute ? "Second Attribute Die" : "Skill Die",
+          skillDie,
+          results[1],
+          skillMod
+        )} ${
+        isComplication
+          ? `<span style="color: red;"><strong>(Complication)</strong></span>`
+          : ""
+      }<br>
+        Focus Die: ${focusDie} → ${results[2]}<br>
+        <strong>Best 2:</strong> ${bestTwo.join(
+          " + "
+        )} + General Mod (${userMod}) + Penalty (${penalty}) = <strong>${total}</strong>
       `;
 
       await roll.toMessage({
         speaker: ChatMessage.getSpeaker({ actor: this.actor }),
         flavor,
-        rollMode: game.settings.get("core", "rollMode")
+        rollMode: game.settings.get("core", "rollMode"),
       });
 
       this.close();
@@ -107,7 +137,7 @@ export class AxiomRollDialog extends Application {
 }
 
 export function openRollFromRow({ row }) {
-  const sheetApp = Object.values(ui.windows).find(w => w?.actor);
+  const sheetApp = Object.values(ui.windows).find((w) => w?.actor);
   const actor = sheetApp?.actor;
   if (!actor) return ui.notifications.warn("Actor not found.");
 
@@ -129,6 +159,6 @@ export function openRollFromRow({ row }) {
     skillMod,
     attributeMod,
     penalty,
-    focusStep: 0
+    focusStep: 0,
   }).render(true);
 }
