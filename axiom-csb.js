@@ -7,7 +7,6 @@ Hooks.once("init", () => {
   game.axiom.openRollFromRow = openRollFromRow;
   game.axiom.getDieLabel = getDieLabel;
   game.axiom.getDieForStat = getDieForStat;
-  game.axiom.getDieForSkill = getDieForSkill;
 });
 
 registerActorSheet();
@@ -34,12 +33,56 @@ export function getDieForStat(actor, statKey, path = `system.props.${statKey}Val
   return getDieLabel(Math.max(1, base));
 }
 
-/**
- * Gets the die label for an actor's skill.
- */
-export function getDieForSkill(actor, item) {
-  const base = parseInt(item.system?.props?.skillBaseDie ?? 3);
-  const level = parseInt(item.system?.props?.skillValue ?? 1);
-  return getDieLabel(Math.max(1, base + (level - 1))); 
-}
+Hooks.on("renderCombatTracker", async (app, html, data) => {
+  for (const li of html.find(".combatant").toArray()) {
+    const $li = $(li);
+    const combatantId = $li.data("combatant-id");
+    const combatant = game.combat?.combatants.get(combatantId);
+    const actor = combatant?.actor;
+    if (!actor) continue;
 
+    const ap = getProperty(actor.system, "props.actorAP") ?? 0;
+
+    const apDiv = $(`
+      <div class="axiom-ap-tracker" style="
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding-right: 4px;
+      ">
+        ${[...Array(3)]
+          .map(
+            (_, i) => `
+          <i class="fa-solid fa-bolt ap-dot"
+             data-index="${i + 1}"
+             style="cursor: pointer; font-size: 18px; color: ${
+               i < ap ? "#b33" : "#444"
+             };"></i>
+        `
+          )
+          .join("")}
+      </div>
+    `);
+
+    $li.find(".token-initiative").after(apDiv);
+
+    apDiv.find(".ap-dot").on("click", async function (event) {
+      event.stopPropagation();
+      const index = parseInt($(this).data("index"));
+      const newAP = index === ap ? index - 1 : index;
+      await actor.update({ "system.props.actorAP": newAP });
+    });
+  }
+});
+
+Hooks.on("updateCombat", async (combat, changes) => {
+  if ("round" in changes) {
+    for (const c of combat.combatants) {
+      const actor = c.actor;
+      if (actor) {
+        await actor.update({ "system.props.actorAP": 3 });
+      }
+    }
+  }
+});

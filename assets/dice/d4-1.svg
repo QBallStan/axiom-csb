@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="200mm"
+   height="200mm"
+   viewBox="0 0 200 200"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   sodipodi:docname="d4-1.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="mm"
+     inkscape:zoom="0.52347032"
+     inkscape:cx="81.18894"
+     inkscape:cy="123.21616"
+     inkscape:window-width="2560"
+     inkscape:window-height="1417"
+     inkscape:window-x="1592"
+     inkscape:window-y="1072"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1">
+    <rect
+       x="1.3508059"
+       y="1.3508059"
+       width="751.04807"
+       height="755.10049"
+       id="rect1" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       id="path5"
+       style="fill:#880000;fill-opacity:1;stroke-width:2.88222"
+       d="M 95.316388,5.5538156 2.584331,74.03469 95.316388,194.44618 Z m 9.367212,0 V 194.44618 L 197.41567,74.04031 Z" />
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,51.541139,42.412557)"
+       id="text1"
+       style="font-size:400px;font-family:Arial;-inkscape-font-specification:Arial;white-space:pre;shape-inside:url(#rect1);fill:#f9f9f9;stroke:none;stroke-width:7.55905522;stroke-opacity:1;stroke-dasharray:none"><tspan
+         x="1.3515625"
+         y="361.65333"
+         id="tspan3"><tspan
+           style="font-family:Orbitron;-inkscape-font-specification:Orbitron"
+           id="tspan2">-1</tspan></tspan></text>
+  </g>
+</svg>

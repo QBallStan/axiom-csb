@@ -1,3 +1,658 @@
+@import url("https://fonts.googleapis.com/css2?family=Unica+One&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;700&display=swap");
+
+:root {
+  --color-text-light-highlight: #fefcf5;
+  --color-text-light-heading: #e0decf;
+  --color-text-light-primary: #d2d0c2;
+
+  --color-text-dark-primary: #66655e;     
+  --color-text-dark-secondary: #737269;
+  --color-text-dark-header: #706f66;
+  --color-text-dark-inactive: #9b9a90;  
+
+  --color-text-hyperlink: #ff6400;
+
+  --color-text-selection: #f7f3e8;
+  --color-text-selection-bg: #666;
+
+  --color-text-light-0: #ffffff;
+  --color-text-light-1: #f8f7f2;
+  --color-text-light-2: #ecebe3;
+  --color-text-light-3: #dcdacd;
+  --color-text-light-4: #cac7b7;
+  --color-text-light-5: #b6b3a0;
+  --color-text-light-6: #a19f8e;
+  --color-text-light-7: #8c8a79;
+
+  --color-text-dark-1: #55544f;
+  --color-text-dark-2: #606059;
+  --color-text-dark-3: #6b6b63;
+  --color-text-dark-4: #76766c;
+  --color-text-dark-5: #828177;
+  --color-text-dark-6: #8e8c81;
+
+  --color-border-light-1: #d6d4c6;
+  --color-border-light-2: #aaa793;
+
+  --color-border-dark-1: #55544f;
+  --color-border-dark-2: #616059;
+  --color-border-dark-3: #6c6b63;
+  --color-border-dark-4: #77766d;
+  --color-border-dark-5: #838279;
+
+  --color-shadow-primary: #bf0000;
+  --color-shadow-highlight: #ff6400;
+  --color-shadow-dark: #000000;
+
+  --color-underline-inactive: #8a897f;
+  --color-underline-active: #5e1c1e;
+  --color-underline-header: #a03a2c;
+
+  --color-border-light-highlight: #fefcf5;
+  --color-border-light-primary: #d2d0c2;
+  --color-border-light-secondary: #e0decf;
+  --color-border-light-tertiary: #a19f8e;
+
+  --color-border-dark: #000000;
+  --color-border-dark-primary: #66655e;
+  --color-border-dark-secondary: #706f66;
+  --color-border-dark-tertiary: #7c7a71;
+
+  --color-border-highlight: #ff6400;
+  --color-border-highlight-alt: #ff2a2a;
+
+  --color-bg-btn-minor-inactive: #dcdacd;
+  --color-bg-btn-minor-active: #c2c0b0;
+
+  --color-select-option-bg: #e8e6da;
+}
+
+body.game .window-app {
+  --color-fieldset-border: var(--color-text-light-2);         
+  --color-form-label: #8a897f;       
+  --color-form-label-hover: #77766f;  
+  --color-form-hint: #9b9a90;        
+  --color-form-hint-hover: #8a897f;   
+  --color-select-option-bg: var(--color-text-light-1);       
+}
+
+.editor-content {
+	text-align: left;
+}	
+
+.custom-system-field-root {
+  margin: 0px;
+}
+.axiom-csb-mod-input {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.axiom-csb-mod-input input {
+  width: 48px;
+  text-align: center;
+}
+.axiom-csb-mod-input button {
+  width: 24px;
+  height: 24px;
+  font-weight: bold;
+  padding: 0;
+}
+.sheet.journal-entry .journal-entry-content,
+.sheet.journal-entry .window-content {
+  background: url("/modules/axiom-csb/assets/window-bg.webp") no-repeat center
+    center !important;
+}
+.CodeMirror {
+  background: #ffffffcc !important;
+}
+.custom-system-actor-content {
+  padding: 0px !important;
+  overflow: unset !important;
+  z-index: 100;
+}
+.content-link {
+  background: none !important;
+  border: none !important;
+}
+select option {
+  background-color: #111;
+}
+button {
+  color: #eaeaea !important;
+  border: 0px solid #eaeaea !important;
+  background: none !important;
+}
+textarea {
+  color: #eaeaea !important;
+}
+.custom-system-actor {
+  color: #eaeaea !important;
+  font-family: "Rajdhani", sans-serif !important;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.sheet-header .profile-img-container {
+  margin-left: 10px;
+  border: none;
+}
+.window-app .window-content {
+  background: url("/modules/axiom-csb/assets/window-bg.webp");
+  color: #eaeaea !important;
+}
+.custom-system.actor {
+  background: url("/modules/axiom-csb/assets/sheet-bg.webp");
+  background-size: cover !important;
+  background-attachment: local;
+}
+.custom-system.actor .window-header {
+  background: none !important;
+  background-color: transparent !important;
+  border-bottom: none !important;
+}
+.custom-system.actor .window-content {
+  background: none !important;
+}
+input[type="text"],
+input[type="number"],
+input[type="password"],
+input[type="date"],
+input[type="time"],
+input[type="search"] {
+  color: #eaeaea !important;
+  font-family: "Rajdhani", sans-serif;
+  font-size: 8pt;
+  border: 1px solid #444;
+}
+.custom-system-sheet-actions select {
+  color: #eaeaea !important;
+}
+select {
+  color: #eaeaea !important;
+}
+.custom-system-number-field-control {
+  display: inline-block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  position: static !important;
+  margin: 0 !important;
+  transform: none !important;
+  transition: none !important;
+}
+.custom-system-number-field-control-minus {
+  transform: translateX(4px) !important;
+}
+.custom-system-number-field-control-plus {
+  transform: translateX(-4px) !important;
+}
+.custom-system-number-field-control,
+.custom-system-number-field-control:hover,
+.custom-system-number-field-control:focus {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+.custom-system-dynamicRow td:last-child {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.profile-img {
+  background: #00000044;
+  border-radius: 10px;
+}
+.actorMainPanel {
+  margin: 0px !important;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  /* prevents wrapping */
+  align-items: flex-start;
+}
+.actorSidePanel {
+  width: 200px;
+  min-width: 200px;
+  max-width: 200px;
+  flex-shrink: 0;
+  margin: 0px 10px 0px 5px;
+}
+.actorHeader {
+  background: #00000044;
+  border-radius: 10px;
+}
+.charname input[name="name"] {
+  font-weight: 700;
+  font-family: "Unica One", sans-serif;
+  font-size: 24pt;
+  color: #e0d4b8 !important;
+  background: #00000044;
+  border-radius: 10px;
+}
+.sheet .custom-system-actor header.sheet-header h1 input {
+  margin: 5px 12px 14px 12px !important;
+  border: none;
+}
+.sheet header.sheet-header h1 input {
+  height: 44px;
+}
+.actorBoonsPanel {
+  margin-bottom: 20px;
+  background: #00000044;
+  border-radius: 10px;
+}
+
+.actorActionPanel {
+  background: #00000044;
+  border-radius: 10px;
+}
+.actorStatsLeftPanel {
+  flex: 1 1 auto;
+  flex-shrink: 0;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 0px;
+}
+.actorStatsRightPanel {
+  margin-left: 10px;
+  margin-right: 0px;
+  margin-top: 0px;
+  width: 240px;
+  flex: 0 0 240px;
+  flex-shrink: 0;
+}
+.actorStatsPanel {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 0px;
+  margin-top: 0px;
+}
+.actorTabs {
+  margin: 5px !important;
+  flex-shrink: 0;
+}
+.axiom-bookmark-tabs {
+  position: absolute;
+  top: 320px;
+  right: -36px;
+  display: flex;
+  flex-direction: column;
+  pointer-events: auto;
+}
+.axiom-bookmark-tabs .item {
+  position: relative;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  background: linear-gradient(to left, rgba(10, 10, 10), #222 10px) !important;
+  color: #e0d4b8;
+  font-weight: bold;
+  padding: 10px 10px;
+  cursor: pointer;
+}
+.axiom-bookmark-tabs .item:hover {
+  background: linear-gradient(to left, rgba(20, 20, 20), #444 10px);
+}
+.axiom-bookmark-tabs .item.active {
+  background: linear-gradient(to left, rgba(20, 20, 20), #555 10px) !important;
+  color: #fff;
+}
+.tabs .active {
+  text-shadow: none;
+}
+.sheet nav.sheet-tabs {
+  border: none !important;
+}
+.skill-pip-block {
+  display: flex;
+  flex-direction: row;
+  /* Horizontal layout */
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  /* spacing between buttons and pips */
+}
+.skill-pip-block .skill-btn.minus {
+  order: 0;
+  /* Ensure minus is left */
+}
+.skill-pip-block .pip-display {
+  order: 1;
+  display: flex;
+  gap: 3px;
+}
+.skill-pip-block .skill-btn.plus {
+  order: 2;
+  /* Ensure plus is right */
+}
+.label-with-buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.label-with-buttons .stat-btn {
+  min-width: 0px;
+  /* Ensures buttons are consistently sized */
+  text-align: center;
+}
+.label-with-buttons span {
+  min-width: 70px;
+  /* Adjust width to fit the longest label */
+  text-align: center;
+}
+.attPanel {
+  flex: 1;
+  width: 120px;
+  margin: 0px;
+  background-image: url("/modules/axiom-csb/assets/attribute-frame.svg");
+  background-size: 75px 75px;
+  background-position: center 27px;
+  background-repeat: no-repeat;
+}
+.actorAttTitle {
+  margin: 0px;
+}
+.actorAttPanel {
+  gap: 0px;
+  margin: 0px;
+  background: #00000044;
+  border-radius: 10px;
+  padding-bottom: 5px;
+}
+.actorAttValue .pentagon-svg text {
+  font-family: "Chakra Petch", sans-serif;
+  font-size: 16pt;
+}
+.custom-system-label-label[data-name*="itemControls"] {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.custom-system-label-label[data-name*="itemControls"] button {
+  margin: 0 !important;
+  padding: 0px 3px !important;
+  /* or lower if needed */
+}
+.custom-system-dynamicRow td {
+  vertical-align: middle;
+}
+.custom-system-dynamicRow td div,
+.custom-system-dynamicRow td span,
+.custom-system-dynamicRow td a,
+.custom-system-dynamicRow td i,
+.custom-system-dynamicRow td button {
+  vertical-align: middle;
+  line-height: 1.2;
+  margin: 0;
+  padding: 0;
+}
+.actorAttRollPanel {
+  margin-top: 20px;
+}
+.actorSpacerPanel {
+  height: 100px;
+}
+.actorResistPanel {
+  background: #00000044;
+  border-radius: 10px;
+  padding: 5px;
+  margin-bottom: 0px;
+}
+.statTitle {
+  font-family: "Chakra Petch", sans-serif;
+  font-weight: 600;
+  font-size: 11pt;
+  color: #e0d4b8;
+}
+.catTitle {
+  font-family: "Chakra Petch", sans-serif;
+  font-weight: 600;
+  font-size: 11pt;
+  color: #e0d4b8;
+  background: #00000044;
+  border-radius: 5px;
+  height: 30px;
+  width: 150px;
+}
+.actorDerivedStats {
+  gap: 0px;
+}
+.actorDamageInfo {
+  gap: 0px;
+  margin-top: 0px;
+  min-height: 52px;
+  max-height: 52px;
+}
+.actorHealthPanel {
+  margin-bottom: 0px;
+  min-height: 26px;
+  max-height: 26px;
+}
+.actorHealthBar {
+  min-height: 26px;
+  max-height: 26px;
+}
+.actorDerivedStats > .custom-system-component-contents {
+  min-height: 26px;
+  max-height: 26px;
+}
+.actorCorruptionPanel {
+  margin: 0px;
+}
+.actorCorruptionPanel {
+  gap: 4px;
+  /* reduce space between elements */
+  column-gap: 4px;
+  row-gap: 0;
+  margin: 0;
+  padding: 0;
+}
+.actorCorruptionPanel > .custom-system-component-contents {
+  flex: 0 0 auto;
+  /* prevents expansion */
+  width: auto;
+  margin: 0;
+  padding: 0 2px;
+  box-sizing: border-box;
+}
+table tr:nth-child(even) {
+  background-color: rgba(90, 90, 90, 0.2) !important;
+}
+.actorUnskilled {
+  width: 230px;
+}
+.actorUnskilledRoll {
+  margin-left: 10px;
+}
+/* ============================== */
+/*         WEAPONS TABLE         */
+/* ============================== */
+.actorWeaponsDisplay table {
+  table-layout: fixed;
+  width: 100%;
+}
+.actorWeaponsDisplay td:nth-child(1) { width: 150px; } /* Type Icon */
+.actorWeaponsDisplay td:nth-child(2) { width: auto;   } /* Name */
+.actorWeaponsDisplay td:nth-child(3) { width: auto;   } /* Damage */
+.actorWeaponsDisplay td:nth-child(4) { width: auto;   } /* AP */
+.actorWeaponsDisplay td:nth-child(5) { width: 30px;   } /* Ammo */
+.actorWeaponsDisplay td:nth-child(6) { width: 60px;   } /* Roll Button */
+.actorWeaponsDisplay td:nth-child(7) { width: 20px;   } /* Controls */
+
+
+/* ============================== */
+/*         ARMOR TABLE           */
+/* ============================== */
+.actorArmorDisplay table {
+  table-layout: fixed;
+  width: 100%;
+}
+.actorArmorDisplay td:nth-child(1) { width: 150px; } /* Type Icon */
+.actorArmorDisplay td:nth-child(2) { width: auto;  } /* Name */
+.actorArmorDisplay td:nth-child(3) { width: 60px;  } /* Armor Value */
+.actorArmorDisplay td:nth-child(4) { width: 20px;  } /* Controls */
+
+
+/* ============================== */
+/*         GEAR TABLE            */
+/* ============================== */
+.actorGearDisplay table {
+  table-layout: fixed;
+  width: 100%;
+}
+.actorGearDisplay td:nth-child(1) { width: 150px; } /* Type Icon */
+.actorGearDisplay td:nth-child(2) { width: auto;  } /* Name */
+.actorGearDisplay td:nth-child(3) { width: 60px;  } /* Quantity */
+.actorGearDisplay td:nth-child(4) { width: 20px;  } /* Controls */
+
+
+/* ============================== */
+/*         SKILLS TABLE          */
+/* ============================== */
+.actorSkillsDisplay td:nth-child(1) { width: 120px; } /* Type Icon */
+.actorSkillsDisplay td:nth-child(2) { width: auto;  } /* Name */
+.actorSkillsDisplay td:nth-child(3) { width: auto;  } /* Attribute */
+.actorSkillsDisplay td:nth-child(4) { width: auto;  } /* Specialization */
+.actorSkillsDisplay td:nth-child(5) { width: auto;  } /* Value (pips) */
+.actorSkillsDisplay td:nth-child(6) { width: 50px;  } /* Recap (roll icon) */
+.actorSkillsDisplay td:nth-child(7) { width: 20px;  } /* Controls (fav/edit) */
+
+
+/* ============================== */
+/*     FAVOURITE SKILLS TABLE    */
+/* ============================== */
+.actorSkillsFav table {
+  table-layout: fixed;
+  width: 100%;
+}
+.actorSkillsFav td:nth-child(1) { width: 115px; } /* Icon */
+.actorSkillsFav td:nth-child(2) { width: 46px;  } /* Name */
+.actorSkillsFav td:nth-child(3) { width: auto;  } /* Recap */
+
+
+/* ============================== */
+/*     FAVOURITE WEAPONS TABLE   */
+/* ============================== */
+.actorWeaponFav table {
+  table-layout: fixed;
+  width: 100%;
+}
+.actorWeaponFav td:nth-child(1) { width: 115px; } /* Icon */
+.actorWeaponFav td:nth-child(2) { width: auto;  } /* Name */
+.actorWeaponFav td:nth-child(3) { width: auto;  } /* Roll */
+
+
+/* ============================== */
+/*     FAVOURITE ARMOR TABLE     */
+/* ============================== */
+.actorArmorFav table {
+  table-layout: fixed;
+  width: 100%;
+}
+.actorArmorFav td:nth-child(1) { width: 142px; } /* Icon */
+.actorArmorFav td:nth-child(2) { width: auto;  } /* Name */
+
+
+/* ============================== */
+/*     FAVOURITE GEAR TABLE      */
+/* ============================== */
+.actorGearFav table {
+  table-layout: fixed;
+  width: 100%;
+}
+.actorGearFav td:nth-child(1) { width: 115px; } /* Icon */
+.actorGearFav td:nth-child(2) { width: auto;  } /* Name */
+.actorGearFav td:nth-child(3) { width: auto;  } /* Quantity */
+
+/* Controls */
+.equip-status-menu {
+  background-color: #222;
+  border: 1px solid #555;
+  padding: 4px;
+  margin: 0;
+  z-index: 10000;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  list-style: none;
+  color: #eaeaea;
+}
+.equip-status-menu li {
+  padding: 4px 8px;
+  cursor: pointer;
+  background-color: transparent;
+  color: #eaeaea;
+  display: flex;
+  align-items: center;
+}
+.equip-status-menu li i {
+  color: #eaeaea;
+  margin-right: 6px;
+}
+
+/* Apply background image to the entire roll window */
+.app.window-app.axiom-roll {
+  background: url("/modules/axiom-csb/assets/sheet-bg.webp");
+  background-size: cover !important;
+  background-repeat: no-repeat;
+  background-attachment: local;
+  border-radius: 8px;
+}
+
+/* Remove header color if needed */
+.app.window-app.axiom-roll header.window-header {
+  background: transparent;
+  border: none;
+}
+
+/* Optional: remove internal white BG from content area */
+.app.window-app.axiom-roll .window-content {
+  background: none;
+}
+
+.axiom-roll-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 10px;
+  font-family: var(--font-primary);
+  align-items: center; /* center everything */
+}
+
+.axiom-title {
+  font-size: 1.4em;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 0.5em;
+  background: #00000066;
+  width: 120px;
+  border-radius: 10px;
+  padding: 5px;
+}
+
+.axiom-group-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.axiom-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 140px; /* key fix: narrow column width */
+}
+
+.axiom-full {
+  width: 100%;
+}
+
+.axiom-group label {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  text-align: center;
+}
+
 .axiom-csb-mod-input {
   display: flex;
   align-items: center;
@@ -9,9 +664,287 @@
   text-align: center;
 }
 
+/* Roll Window */
+
 .axiom-csb-mod-input button {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   font-weight: bold;
+  font-size: 1em;
   padding: 0;
+  border: none;
+  background: var(--color-border-light-tertiary, #ccc);
+  border-radius: 4px;
+  cursor: pointer;
 }
+
+.axiom-csb-mod-input button:hover {
+  background: var(--color-border-highlight, #888);
+  color: white;
+}
+
+.axiom-die-frame {
+  background-image: url("/modules/axiom-csb/assets/attribute-frame.svg");
+  background-size: 75%;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 2.5rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100px;
+  width: 100%;
+}
+
+.axiom-die-frame select {
+  background-color: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  width: 100%;
+  max-width: 80px;
+}
+
+.axiom-roll-button {
+  width: 30%;
+  padding: 10px;
+  font-size: 1.2em;
+  font-weight: bold;
+  text-align: center;
+  background: #00000044 !important;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+
+.axiom-roll-button:hover {
+  background: var(--color-border-highlight-alt, #1c5fa8);
+}
+
+/* Chat Card */
+/* Chat Card Wrapper */
+.chat-message:has(.axiom-chat-card) {
+  background-image: url("/modules/axiom-csb/assets/window-bg.webp");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: 0px solid !important;
+  padding: 6px 8px;
+  overflow: hidden;
+  position: relative;
+  z-index: 10;
+}
+
+.chat-message:has(.axiom-chat-card) .message-sender {
+  font-family: "Unica One", sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #e0d4b8;
+  padding: 2px 6px;
+  z-index: 10;
+}
+
+.chat-message:has(.axiom-chat-card) .message-content {
+  padding: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.chat-message:has(.axiom-chat-card) .message-header {
+  border-bottom: none;
+}
+
+.chat-message:has(.axiom-chat-card) .message-metadata {
+  color: #aaa;
+  font-size: 0.75em;
+}
+
+/* Inner Chat Card Styles */
+.axiom-chat-card {
+  font-family: "Chakra Petch", sans-serif;
+  color: #eaeaea;
+  padding: 10px;
+  border-radius: 8px;
+  background: none;
+  position: relative;
+  z-index: 1;
+}
+
+.axiom-chat-card header {
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.1em;
+  color: #e0d4b8;
+  margin-bottom: 6px;
+}
+
+.axiom-roll-columns {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  margin: 8px 0;
+}
+
+.axiom-roll-column {
+  flex: 1;
+  text-align: center;
+  background: #00000044;
+  border-radius: 6px;
+  padding: 6px 4px;
+}
+
+.axiom-roll-column .label {
+  font-size: 0.8em;
+  font-weight: 600;
+  color: #bbb;
+  margin-bottom: 4px;
+}
+
+.axiom-roll-column .die {
+  font-size: 1.3em;
+  font-weight: bold;
+  color: #eaeaea;
+}
+
+.axiom-roll-column .mod {
+  font-size: 0.75em;
+  color: #ccc;
+  margin-top: 2px;
+}
+
+.axiom-roll-summary {
+  margin-top: 6px;
+  text-align: center;
+  background: #00000044;
+  padding: 6px;
+  border-radius: 6px;
+}
+
+.axiom-roll-summary .mod-detail {
+  font-size: 0.75em;
+  color: #999;
+  margin-bottom: 4px;
+}
+
+.axiom-roll-summary strong {
+  color: #fff;
+  font-size: 1em;
+}
+
+.axiom-chat-card .complication {
+  margin-top: 3px;
+  color: #ff3333;
+  font-weight: bold;
+  font-size: 0.75em;
+}
+
+.itemname input {
+  font-weight: 700;
+  font-family: "Unica One", sans-serif;
+  font-size: 24pt;
+  color: #e0d4b8 !important;
+  background: #00000044;
+  border-radius: 10px;
+  padding: 0px 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.skillHeader,
+.armorHeader,
+.weaponHeader,
+.gearHeader {
+  align-items: center;
+  gap: 6px;
+  margin-left: 16px;	
+}
+
+.skillHeader .custom-system-field-full-size,
+.armorHeader .custom-system-field-full-size,
+.weaponHeader .custom-system-field-full-size,
+.gearHeader .custom-system-field-full-size {
+  flex: 0 0 auto !important;
+  width: auto !important;
+}
+
+.skillDetailsPanel {
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+.skillDiePanel .skillBaseDieTitle.custom-system-field {
+  justify-content: flex-start !important;
+  text-align: left !important;
+}
+
+.itemDescription {
+	border: 1px solid #444;
+	border-radius: 5px;
+	margin-top: 5px;
+	flex: 1 1 auto !important;
+	display: flex;
+    flex-direction: column;
+    min-height: 0;
+	height: 100%;
+}
+
+.armorLeftPanel,
+.weaponLeftPanel {
+	max-width: 200px !important;
+	padding-right: 10px;
+	border-right: 1px solid;
+	min-height: 390px;
+}
+
+.armorRightPanel {
+	padding-left: 5px;
+	min-height: 390px;
+}
+
+.gearQtyPanel {
+	gap: 5px;
+}
+
+.weaponDamagePanel,
+.weaponAmmoPanel {
+	margin: 0px;
+}
+
+.armorValues {
+  position: relative;
+  background-image: url("/modules/axiom-csb/assets/armor.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+	background-position: center 20px;
+}
+
+.custom-system-item-container-image {
+	max-width: 20px;
+	max-height: 20px;
+}	
+
+.die-icon {
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+  border: 0px;	
+}
+
+.die-icon-stat {
+  width: 100%;
+  height: 100%;
+}
+
+.readonly-number input {
+  border: none;
+  background: none;
+  pointer-events: none;
+  user-select: none;
+  caret-color: transparent;
+  cursor: default;
+  font-size: 12px;
+}	

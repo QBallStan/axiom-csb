@@ -1,81 +1,81 @@
 <form class="axiom-roll-dialog">
-  <div class="form-group">
-    <label>Attribute Die</label>
-    <select name="attributeDie">
-      <option value="d4-2" {{#if (eq attributeDie "d4-2")}}selected{{/if}}>d4-2</option>
-      <option value="d4-1" {{#if (eq attributeDie "d4-1")}}selected{{/if}}>d4-1</option>
-      <option value="d4" {{#if (eq attributeDie "d4")}}selected{{/if}}>d4</option>
-      <option value="d6" {{#if (eq attributeDie "d6")}}selected{{/if}}>d6</option>
-      <option value="d8" {{#if (eq attributeDie "d8")}}selected{{/if}}>d8</option>
-      <option value="d10" {{#if (eq attributeDie "d10")}}selected{{/if}}>d10</option>
-      <option value="d12" {{#if (eq attributeDie "d12")}}selected{{/if}}>d12</option>
-      <option value="d12+1" {{#if (eq attributeDie "d12+1")}}selected{{/if}}>d12+1</option>
-      <option value="d12+2" {{#if (eq attributeDie "d12+2")}}selected{{/if}}>d12+2</option>
-      <option value="d12+3" {{#if (eq attributeDie "d12+3")}}selected{{/if}}>d12+3</option>
-      <option value="d12+4" {{#if (eq attributeDie "d12+4")}}selected{{/if}}>d12+4</option>
-      <option value="d12+5" {{#if (eq attributeDie "d12+5")}}selected{{/if}}>d12+5</option>
-      <option value="d12+6" {{#if (eq attributeDie "d12+6")}}selected{{/if}}>d12+6</option>
-      <option value="d12+7" {{#if (eq attributeDie "d12+7")}}selected{{/if}}>d12+7</option>
-      <option value="d12+8" {{#if (eq attributeDie "d12+8")}}selected{{/if}}>d12+8</option>
-      <option value="d12+9" {{#if (eq attributeDie "d12+9")}}selected{{/if}}>d12+9</option>
-      <option value="d12+10" {{#if (eq attributeDie "d12+10")}}selected{{/if}}>d12+10</option>
-    </select>
-  </div>
 
-  <div class="form-group">
-    <label>Attribute Modifier</label>
-    <div class="axiom-csb-mod-input">
-      <button type="button" class="mod-minus">–</button>
-      <input type="number" name="attributeMod" value="{{attributeMod}}" />
-      <button type="button" class="mod-plus">+</button>
+  <div class="axiom-group-row">
+    <div class="axiom-group axiom-centered">
+      <label>Attribute Mod</label>
+      <div class="axiom-csb-mod-input">
+        <button type="button" class="mod-minus">–</button>
+        <input type="number" name="attributeMod" value="{{attributeMod}}" />
+        <button type="button" class="mod-plus">+</button>
+      </div>
+    </div>
+
+    <div class="axiom-group axiom-centered">
+      <label>Skill Mod</label>
+      <div class="axiom-csb-mod-input">
+        <button type="button" class="mod-minus">–</button>
+        <input type="number" name="skillMod" value="{{skillMod}}" />
+        <button type="button" class="mod-plus">+</button>
+      </div>
+    </div>
+
+    <div class="axiom-group axiom-centered">
+      <label>Focus Mod</label>
+      <div class="axiom-csb-mod-input">
+        <button type="button" class="mod-minus">–</button>
+        <input type="number" name="focusMod" value="{{focusMod}}" />
+        <button type="button" class="mod-plus">+</button>
+      </div>
     </div>
   </div>
 
-  <div class="form-group">
-    <label>{{#if dualAttribute}}Second Attribute Die{{else}}Skill Die{{/if}}</label>
-    <select name="skillDie">
-      <option value="d4-2" {{#if (eq skillDie "d4-2")}}selected{{/if}}>d4-2</option>
-      <option value="d4-1" {{#if (eq skillDie "d4-1")}}selected{{/if}}>d4-1</option>
-      <option value="d4" {{#if (eq skillDie "d4")}}selected{{/if}}>d4</option>
-      <option value="d6" {{#if (eq skillDie "d6")}}selected{{/if}}>d6</option>
-      <option value="d8" {{#if (eq skillDie "d8")}}selected{{/if}}>d8</option>
-      <option value="d10" {{#if (eq skillDie "d10")}}selected{{/if}}>d10</option>
-      <option value="d12" {{#if (eq skillDie "d12")}}selected{{/if}}>d12</option>
-      <option value="d12+1" {{#if (eq skillDie "d12+1")}}selected{{/if}}>d12+1</option>
-      <option value="d12+2" {{#if (eq skillDie "d12+2")}}selected{{/if}}>d12+2</option>
-      <option value="d12+3" {{#if (eq skillDie "d12+3")}}selected{{/if}}>d12+3</option>
-      <option value="d12+4" {{#if (eq skillDie "d12+4")}}selected{{/if}}>d12+4</option>
-      <option value="d12+5" {{#if (eq skillDie "d12+5")}}selected{{/if}}>d12+5</option>
-      <option value="d12+6" {{#if (eq skillDie "d12+6")}}selected{{/if}}>d12+6</option>
-      <option value="d12+7" {{#if (eq skillDie "d12+7")}}selected{{/if}}>d12+7</option>
-      <option value="d12+8" {{#if (eq skillDie "d12+8")}}selected{{/if}}>d12+8</option>
-      <option value="d12+9" {{#if (eq skillDie "d12+9")}}selected{{/if}}>d12+9</option>
-      <option value="d12+10" {{#if (eq skillDie "d12+10")}}selected{{/if}}>d12+10</option>
-    </select>
-  </div>
+  <div class="axiom-group-row">
+    <div class="axiom-group axiom-centered">
+      <label>Attribute</label>
+      <div class="axiom-die-frame">
+        <select name="attributeDie">
+          <option value="d4-2" {{#if (eq attributeDie "d4-2")}}selected{{/if}}>d4–2</option>
+          <option value="d4-1" {{#if (eq attributeDie "d4-1")}}selected{{/if}}>d4–1</option>
+          <option value="d4" {{#if (eq attributeDie "d4")}}selected{{/if}}>d4</option>
+          <option value="d6" {{#if (eq attributeDie "d6")}}selected{{/if}}>d6</option>
+          <option value="d8" {{#if (eq attributeDie "d8")}}selected{{/if}}>d8</option>
+          <option value="d10" {{#if (eq attributeDie "d10")}}selected{{/if}}>d10</option>
+          <option value="d12" {{#if (eq attributeDie "d12")}}selected{{/if}}>d12</option>
+          <option value="d12+1" {{#if (eq attributeDie "d12+1")}}selected{{/if}}>d12+1</option>
+          <option value="d12+2" {{#if (eq attributeDie "d12+2")}}selected{{/if}}>d12+2</option>
+          <option value="d12+3" {{#if (eq attributeDie "d12+3")}}selected{{/if}}>d12+3</option>
+        </select>
+      </div>
+    </div>
 
-  <div class="form-group">
-    <label>{{#if dualAttribute}}Second Attribute Modifier{{else}}Skill Modifier{{/if}}</label>
-    <div class="axiom-csb-mod-input">
-      <button type="button" class="mod-minus">–</button>
-      <input type="number" name="skillMod" value="{{skillMod}}" />
-      <button type="button" class="mod-plus">+</button>
+    <div class="axiom-group axiom-centered">
+      <label>{{#if dualAttribute}}Second Attribute{{else}}Skill{{/if}}</label>
+      <div class="axiom-die-frame">
+        <select name="skillDie">
+          <option value="d4-2" {{#if (eq skillDie "d4-2")}}selected{{/if}}>d4–2</option>
+          <option value="d4-1" {{#if (eq skillDie "d4-1")}}selected{{/if}}>d4–1</option>
+          <option value="d4" {{#if (eq skillDie "d4")}}selected{{/if}}>d4</option>
+          <option value="d6" {{#if (eq skillDie "d6")}}selected{{/if}}>d6</option>
+          <option value="d8" {{#if (eq skillDie "d8")}}selected{{/if}}>d8</option>
+          <option value="d10" {{#if (eq skillDie "d10")}}selected{{/if}}>d10</option>
+          <option value="d12" {{#if (eq skillDie "d12")}}selected{{/if}}>d12</option>
+          <option value="d12+1" {{#if (eq skillDie "d12+1")}}selected{{/if}}>d12+1</option>
+          <option value="d12+2" {{#if (eq skillDie "d12+2")}}selected{{/if}}>d12+2</option>
+          <option value="d12+3" {{#if (eq skillDie "d12+3")}}selected{{/if}}>d12+3</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="axiom-group axiom-centered">
+      <label>Focus</label>
+      <div class="axiom-die-frame">
+        <div class="fixed-focus-display">d8</div>
+      </div>
     </div>
   </div>
 
-  <div class="form-group">
-    <label>Focus Die</label>
-    <select name="focusDie">
-      <option value="d6" {{#if (eq focusDie "d6")}}selected{{/if}}>d6</option>
-      <option value="d8" {{#if (eq focusDie "d8")}}selected{{/if}}>d8</option>
-      <option value="d10" {{#if (eq focusDie "d10")}}selected{{/if}}>d10</option>
-      <option value="d12" {{#if (eq focusDie "d12")}}selected{{/if}}>d12</option>
-      <option value="d12+1" {{#if (eq focusDie "d12+1")}}selected{{/if}}>d12+1</option>
-    </select>
-  </div>
-
-  <div class="form-group">
-    <label>General Modifier</label>
+  <div class="axiom-group axiom-full axiom-centered">
+    <label>General Mod</label>
     <div class="axiom-csb-mod-input">
       <button type="button" class="mod-minus">–</button>
       <input type="number" name="modifier" value="{{modifier}}" />
@@ -83,9 +83,10 @@
     </div>
   </div>
 
-  <div class="form-group">
-    <button type="button" class="roll-button">
+  <div class="axiom-group axiom-full">
+    <button type="button" class="axiom-roll-button">
       <i class="fa-solid fa-dice"></i> Roll
     </button>
   </div>
+
 </form>

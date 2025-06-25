@@ -1,0 +1,45 @@
+<div class="axiom-chat-card">
+  <header>
+    <strong>{{skillName}} Test</strong>
+  </header>
+
+  <div class="axiom-roll-columns">
+    <div class="axiom-roll-column">
+      <div class="label">Attribute</div>
+      <div class="die">
+        {{attributeRaw}}
+        {{#if attributeStepMod}}
+          {{#if (lt attributeStepMod 0)}} – {{else}} + {{/if}}{{abs attributeStepMod}}
+        {{/if}}
+      </div>
+      <div class="mod">Mod: {{attributeMod}}{{^attributeMod}}0{{/attributeMod}}</div>
+    </div>
+
+    <div class="axiom-roll-column">
+      <div class="label">{{#if dualAttribute}}Second Attribute{{else}}Skill{{/if}}</div>
+      <div class="die">
+        {{skillRaw}}
+        {{#if skillStepMod}}
+          {{#if (lt skillStepMod 0)}} – {{else}} + {{/if}}{{abs skillStepMod}}
+        {{/if}}
+      </div>
+      <div class="mod">Mod: {{skillMod}}{{^skillMod}}0{{/skillMod}}</div>
+    </div>
+
+    <div class="axiom-roll-column">
+      <div class="label">Focus</div>
+      <div class="die">{{focusRaw}}</div>
+      <div class="mod">Mod: {{focusMod}}{{^focusMod}}0{{/focusMod}}</div>
+      {{#if isComplication}}<div class="complication">Complication!</div>{{/if}}
+    </div>
+  </div>
+
+  <div class="axiom-roll-summary">
+    <div class="mod-detail">
+      General Mod: {{userMod}}{{^userMod}}0{{/userMod}},
+      Penalty: {{penalty}}{{^penalty}}0{{/penalty}},
+      Wound Mod: {{damagePenalty}}{{^damagePenalty}}0{{/damagePenalty}}
+    </div>
+    <strong>Total:</strong> {{best2.[0]}} + {{best2.[1]}} = <strong>{{total}}</strong>
+  </div>
+</div>
