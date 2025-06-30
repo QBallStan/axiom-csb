@@ -24,8 +24,8 @@
      inkscape:deskcolor="#505050"
      inkscape:document-units="mm"
      inkscape:zoom="1.4805976"
-     inkscape:cx="60.448563"
-     inkscape:cy="194.17835"
+     inkscape:cx="60.110863"
+     inkscape:cy="193.50295"
      inkscape:window-width="2560"
      inkscape:window-height="1417"
      inkscape:window-x="1592"
@@ -40,8 +40,8 @@
      id="layer1">
     <path
        id="path1"
-       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:6.05441;stroke-dasharray:none;stroke-opacity:1"
-       d="M 94.771843,5.2282553 50.000048,33.86677 5.2282532,5.2282553 33.867251,49.999569 5.2282545,94.771842 50.000049,66.133328 94.771842,94.771844 66.132847,49.999569 Z" />
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:4.63615;stroke-dasharray:none;stroke-opacity:1"
+       d="M 84.283946,84.283945 62.35407,50.000048 84.283944,15.716154 50.000417,37.646398 15.716156,15.716154 37.64603,50.000049 15.716155,84.283944 50.000418,62.3537 Z" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:35.27777778px;font-family:Orbitron;-inkscape-font-specification:'Orbitron Bold';fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:7.57343;stroke-dasharray:none;stroke-opacity:1"
@@ -50,6 +50,6 @@
        id="text4"><tspan
          sodipodi:role="line"
          id="tspan4"
-         style="stroke-width:7.57343;-inkscape-font-specification:'Orbitron Bold';font-family:Orbitron;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal;font-size:35.27777778px"></tspan></text>
+         style="stroke-width:7.57343;-inkscape-font-specification:'Orbitron Bold';font-family:Orbitron;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal;font-size:35.27777778px" /></text>
   </g>
 </svg>
