@@ -8,7 +8,7 @@
    version="1.1"
    id="svg1"
    inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
-   sodipodi:docname="miss.svg"
+   sodipodi:docname="flaw.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -24,8 +24,8 @@
      inkscape:deskcolor="#505050"
      inkscape:document-units="mm"
      inkscape:zoom="1.4805976"
-     inkscape:cx="60.448563"
-     inkscape:cy="194.17835"
+     inkscape:cx="55.04534"
+     inkscape:cy="195.52915"
      inkscape:window-width="2560"
      inkscape:window-height="1417"
      inkscape:window-x="1592"
@@ -39,9 +39,10 @@
      inkscape:groupmode="layer"
      id="layer1">
     <path
-       id="path1"
-       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:6.05441;stroke-dasharray:none;stroke-opacity:1"
-       d="M 94.771843,5.2282553 50.000048,33.86677 5.2282532,5.2282553 33.867251,49.999569 5.2282545,94.771842 50.000049,66.133328 94.771842,94.771844 66.132847,49.999569 Z" />
+       id="path1-5"
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:9.56563;stroke-dasharray:none;stroke-opacity:1"
+       d="M 47.890837 -1.4069127 L 4.304142 42.179023 L -37.828422 43.028486 L 1.4736058 45.970466 L 47.890837 92.386283 L 91.475913 48.800703 L 133.6101 47.950885 L 94.30483 45.008192 L 47.890837 -1.4069127 z "
+       transform="matrix(0.15956412,0.15956412,-0.72605696,0.72605696,75.386492,9.3302871)" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:35.27777778px;font-family:Orbitron;-inkscape-font-specification:'Orbitron Bold';fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:7.57343;stroke-dasharray:none;stroke-opacity:1"
