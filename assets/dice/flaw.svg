@@ -40,8 +40,9 @@
      id="layer1">
     <path
        id="path1-5"
-       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:5.83693;stroke-dasharray:none;stroke-opacity:1"
-       d="M 93.163368,6.8367292 45.818009,37.121147 29.942764,23.914049 39.153209,42.640863 6.8367291,93.163369 54.181434,62.878296 l 15.8759,13.207753 -9.2111,-18.728125 z" />
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:9.56563;stroke-dasharray:none;stroke-opacity:1"
+       d="M 47.890781 -1.407117 L 0.99257022 45.489685 L 47.890781 92.386487 L 94.786349 45.489685 L 89.92055 40.623184 L 39.744565 62.832675 L 45.192991 13.894155 L 57.669939 8.3717605 L 47.890781 -1.407117 z "
+       transform="matrix(0.19557356,0.19557356,-0.88990901,0.88990901,81.115559,0.15219774)" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:35.27777778px;font-family:Orbitron;-inkscape-font-specification:'Orbitron Bold';fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:7.57343;stroke-dasharray:none;stroke-opacity:1"
