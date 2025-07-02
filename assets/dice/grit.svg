@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="100mm"
+   height="100mm"
+   viewBox="0 0 100 100"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   sodipodi:docname="grit.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="mm"
+     inkscape:zoom="0.70710678"
+     inkscape:cx="173.24116"
+     inkscape:cy="142.12846"
+     inkscape:window-width="2560"
+     inkscape:window-height="1417"
+     inkscape:window-x="1592"
+     inkscape:window-y="1072"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       sodipodi:type="star"
+       style="fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:9.32845;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+       id="path4"
+       inkscape:flatsided="true"
+       sodipodi:sides="6"
+       sodipodi:cx="41.533684"
+       sodipodi:cy="46.772163"
+       sodipodi:r1="44.179871"
+       sodipodi:r2="38.260891"
+       sodipodi:arg1="1.0471976"
+       sodipodi:arg2="1.5707963"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="m 63.623617,85.033055 -44.17987,-2e-6 L -2.6461868,46.772161 19.44375,8.511272 l 44.179871,2.2e-6 22.089933,38.2608918 z"
+       transform="matrix(0.98517505,0,0,0.98517505,9.0820523,3.9212331)" />
+    <path
+       sodipodi:type="star"
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:9.56563;stroke-dasharray:none;stroke-opacity:1"
+       id="path1"
+       inkscape:flatsided="true"
+       sodipodi:sides="4"
+       sodipodi:cx="47.89053"
+       sodipodi:cy="45.489685"
+       sodipodi:r1="46.896671"
+       sodipodi:r2="33.160957"
+       sodipodi:arg1="1.5707963"
+       sodipodi:arg2="2.3561945"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="M 47.890531,92.386356 0.99385834,45.489686 47.890528,-1.4069862 94.787201,45.489684 Z"
+       transform="matrix(0.19542534,0.11282887,-0.5133998,0.88923454,63.995372,3.9584778)" />
+    <path
+       sodipodi:type="star"
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:9.56563;stroke-dasharray:none;stroke-opacity:1"
+       id="path1-0"
+       inkscape:flatsided="true"
+       sodipodi:sides="4"
+       sodipodi:cx="47.89053"
+       sodipodi:cy="45.489685"
+       sodipodi:r1="46.896671"
+       sodipodi:r2="33.160957"
+       sodipodi:arg1="1.5707963"
+       sodipodi:arg2="2.3561945"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="M 47.890531,92.386356 0.99385834,45.489686 47.890528,-1.4069862 94.787201,45.489684 Z"
+       transform="matrix(0.19542534,-0.11282887,0.5133998,0.88923454,17.286582,14.952435)" />
+    <path
+       sodipodi:type="star"
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:9.56563;stroke-dasharray:none;stroke-opacity:1"
+       id="path1-0-5"
+       inkscape:flatsided="true"
+       sodipodi:sides="4"
+       sodipodi:cx="47.89053"
+       sodipodi:cy="45.489685"
+       sodipodi:r1="46.896671"
+       sodipodi:r2="33.160957"
+       sodipodi:arg1="1.5707963"
+       sodipodi:arg2="2.3561945"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="M 47.890531,92.386356 0.99385834,45.489686 47.890528,-1.4069862 94.787201,45.489684 Z"
+       transform="matrix(0,-0.22565774,1.0267996,0,3.2912096,60.806869)" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer5"
+     inkscape:label="Layer 2" />
+</svg>
